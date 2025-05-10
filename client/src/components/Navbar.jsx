@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../authSlice";
+import { ChevronDown, LogOut, Menu, Settings, User, X } from "lucide-react";
+import NavLink from "./NavLink";
 
 const Navbar = () => {
 
     const auth = useSelector(state => state.user)
+    const dispatch = useDispatch()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -16,7 +20,12 @@ const Navbar = () => {
         { name: "About", href: "/about" },
         { name: "Rent Car", href: "/rent" },
         { name: "Contact", href: "/contact" },
-      ]
+    ]
+
+    const handleLogout = () => {
+        dispatch(logout())
+        localStorage.removeItem("auth")
+    }
 
     return ( 
         <nav>
@@ -29,20 +38,7 @@ const Navbar = () => {
                 <div className="hidden md:flex">
                     <div className="flex justify-center items-center">
                         {navItems.map(item => (
-                            <Link
-                                key={item.name}
-                                to={item.href}
-                                className={`flex items-center px-1 mx-5 text-sm relative h-10 ${
-                                    currentPath === item.href ? "font-bold"
-                                    : "font-medium text-gray-500"
-                                }`}
-                            >
-                                {item.name}
-                                {/* This is the bottom border that appears for active tab */}
-                                {currentPath === item.href && (
-                                    <span className="rounded absolute bottom-0 left-1/2 -translate-1/2 w-10 h-0.5 bg-black"></span>
-                                )}
-                            </Link>
+                            <NavLink item={item} currentPath={currentPath}/>
                         ))}
                     </div>
                 </div>
@@ -55,28 +51,46 @@ const Navbar = () => {
                         </button>
                     </Link>
                     ) : (
-                    <div className="flex place-content-center items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
-                        {auth.user}
-                    </div>
+                    <details className="relative group hidden md:flex items-center space-x-3 px-4 py-1 rounded-full transition duration-150 hover:bg-gray-200">
+                        <summary className="flex items-center space-x-2 cursor-pointer">
+                            <div 
+                            className="text-white font-semibold rounded-full bg-[#e93c3d] w-10 h-10 flex justify-center place-items-center">H</div>
+                            <span className="font-semibold">{auth.user}</span>
+                            <ChevronDown className="w-4 h-4 transition-transform duration-300 group-open:rotate-180" />
+                        </summary>
+
+                        <div className="absolute right-0 mt-2 w-40 rounded shadow-lg py-2 text-sm text-gray-600 opacity-0 pointer-events-none transition-all duration-300 ease-out group-open:opacity-100 group-open:scale-100 group-open:pointer-events-auto">
+                            <div className="border-b-1 border-gray-300">
+                                <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><User className="w-4 h-4" /></span> Profile</Link>
+                                <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><Settings className="w-4 h-4" /></span> Settings</Link>
+                            </div>
+                            <button onClick={handleLogout}
+                            className="w-full flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100">
+                                <span><LogOut className="w-4 h-4" /></span>Logout</button>
+                        </div>
+                    </details>
                     )
                 }
                 {/* Hamburger for Mobile */}
                 <div className="md:hidden">
-                    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="hover:bg-gray-200 transition duration-200 text-3xl h-12 w-12 flex justify-center items-center rounded-xl">
-                        {/* <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50">
-                            <path d="M 5 8 A 2.0002 2.0002 0 1 0 5 12 L 45 12 A 2.0002 2.0002 0 1 0 45 8 L 5 8 z M 5 23 A 2.0002 2.0002 0 1 0 5 27 L 45 27 A 2.0002 2.0002 0 1 0 45 23 L 5 23 z M 5 38 A 2.0002 2.0002 0 1 0 5 42 L 45 42 A 2.0002 2.0002 0 1 0 45 38 L 5 38 z"></path>
-                        </svg> */}
-                        {isMenuOpen ? "✕" : "☰"}
+                    <button onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="hover:bg-gray-200 transition duration-200 h-12 w-12 flex justify-center items-center rounded-xl">
+                        <div className={`transition-all duration-300 ease-in-out 
+                            ${isMenuOpen ? 'rotate-90 opacity-100 scale-100' : 'rotate-0 opacity-100 scale-100'}`}>
+                                
+                            {isMenuOpen ? (
+                                <X className="w-8 h-8 text-gray-700" />
+                            ) : (
+                                <Menu className="w-8 h-8 text-gray-700" />
+                            )}
+                            
+                        </div>
                     </button>
                 </div>
             </div>
             
             {/* if the menu is open */}
-            {isMenuOpen && (
-                <div className="md:hidden transition duration-500 shadow-xl p-5 space-y-1">
+                <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} shadow-xl p-5 space-y-1`}>
                     <div>
                         {navItems.map(item => (
                             <Link 
@@ -97,14 +111,20 @@ const Navbar = () => {
                             </ Link>
                         ))}
                     </div>
-                    <Link to='/login'>
-                        <button onClick={() => setIsMenuOpen(false)}
-                        className="cursor-pointer rounded bg-[#e93c3d] hover:bg-red-700 py-3 w-full transition duration-200 text-white font-semibold">
-                            Sign In
-                        </button>
-                    </Link>
+                    {!auth.isAuthenticated ?
+                        (<Link to='/login'>
+                            <button onClick={() => setIsMenuOpen(false)}
+                            className="cursor-pointer rounded bg-[#e93c3d] hover:bg-red-700 py-3 w-full transition duration-200 text-white font-semibold">
+                                Sign In
+                            </button>
+                        </Link>)    :
+                        (   <button onClick={handleLogout}
+                            className="cursor-pointer rounded bg-[#e93c3d] hover:bg-red-700 py-3 w-full transition duration-200 text-white font-semibold">
+                                Logout
+                            </button>
+                        )
+                    }
                 </div>
-            )}
         </nav>
      );
 }
