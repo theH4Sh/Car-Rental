@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../authSlice";
 import { ChevronDown, LogOut, Menu, Settings, User, X } from "lucide-react";
 import NavLink from "./NavLink";
+import UserDropdown from "./UserDropdown";
 
 const Navbar = () => {
 
@@ -51,28 +52,12 @@ const Navbar = () => {
                         </button>
                     </Link>
                     ) : (
-                    <details className="relative group hidden md:flex items-center space-x-3 px-4 py-1 rounded-full transition duration-150 hover:bg-gray-200">
-                        <summary className="flex items-center space-x-2 cursor-pointer">
-                            <div 
-                            className="text-white font-semibold rounded-full bg-[#e93c3d] w-10 h-10 flex justify-center place-items-center">H</div>
-                            <span className="font-semibold">{auth.user}</span>
-                            <ChevronDown className="w-4 h-4 transition-transform duration-300 group-open:rotate-180" />
-                        </summary>
-
-                        <div className="absolute right-0 mt-2 w-40 rounded shadow-lg py-2 text-sm text-gray-600 opacity-0 pointer-events-none transition-all duration-300 ease-out group-open:opacity-100 group-open:scale-100 group-open:pointer-events-auto">
-                            <div className="border-b-1 border-gray-300">
-                                <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><User className="w-4 h-4" /></span> Profile</Link>
-                                <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><Settings className="w-4 h-4" /></span> Settings</Link>
-                            </div>
-                            <button onClick={handleLogout}
-                            className="w-full flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100">
-                                <span><LogOut className="w-4 h-4" /></span>Logout</button>
-                        </div>
-                    </details>
+                        <UserDropdown auth={ auth }/>
                     )
                 }
                 {/* Hamburger for Mobile */}
-                <div className="md:hidden">
+                <div className="md:hidden flex items-center">
+                    <UserDropdown auth={auth} mobile={true} />
                     <button onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="hover:bg-gray-200 transition duration-200 h-12 w-12 flex justify-center items-center rounded-xl">
                         <div className={`transition-all duration-300 ease-in-out 
