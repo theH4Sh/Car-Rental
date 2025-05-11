@@ -38,8 +38,8 @@ const Navbar = () => {
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex">
                     <div className="flex justify-center items-center">
-                        {navItems.map(item => (
-                            <NavLink item={item} currentPath={currentPath}/>
+                        {navItems.map((item, id) => (
+                            <NavLink key={id} item={item} currentPath={currentPath}/>
                         ))}
                     </div>
                 </div>
