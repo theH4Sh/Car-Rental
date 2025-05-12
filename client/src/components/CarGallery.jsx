@@ -5,7 +5,7 @@ const CarGallery = ({ mainImage, images, carName }) => {
                 <img 
                 src={import.meta.env.VITE_API + 'images/' + mainImage} 
                 alt={carName}
-                className="rounded-xl w-full h-full md:h-[500px] lg:w-[800px] lg:h-[500px] object-cover" />
+                className="rounded-xl w-full h-auto md:h-[500px] lg:w-[800px] lg:h-[500px] object-cover" />
             </div>
             <div className="gap-2 flex md:flex-col">
                 {images.map((img, id) => (
@@ -13,7 +13,7 @@ const CarGallery = ({ mainImage, images, carName }) => {
                         key={id}
                         src={img}
                         alt={carName}
-                        className="rounded-lg md:h-[160.5px] w-36 md:w-44 cursor-pointer object-cover"
+                        className="rounded-lg md:h-[160.5px] w-full min-w-[90px] cursor-pointer object-cover"
                     />
                 ))}
             </div>
