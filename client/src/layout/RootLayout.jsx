@@ -6,7 +6,7 @@ const RootLayout = () => {
     return ( 
         <div>
             <Navbar />
-            <div>
+            <div className="shadow-sm md:shadow-none flex justify-between items-center md:justify-evenly p-5 md:p-0 md:py-10">
                 <Outlet />
             </div>
             <Footer />
