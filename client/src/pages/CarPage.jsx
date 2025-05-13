@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 import CarGallery from "../components/CarGallery";
-import { Car, CarFront, Cog, Fuel, Gauge, MapPin } from "lucide-react"
+import { ArrowRight, CalendarDays, Car, CarFront, CircleUser, Cog, Fuel, Gauge, MapPin } from "lucide-react"
 const CarPage = () => {
     const { id } = useParams()
     const { data: car, isLoading, error } = useFetch(`api/car/${id}`)
@@ -96,6 +96,34 @@ const CarPage = () => {
                         <p className="text-gray-500">
                             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatum aut impedit voluptas adipisci quos aliquid, minus vel quia eligendi qui incidunt! Quis voluptatum pariatur vero asperiores quaerat ex dolor placeat!
                         </p>
+                      </div>
+
+                      {/* Reviews */}
+                      <div className="pt-8">
+                        <h2 className="text-xl font-bold">Customer Reviews <span className="text-gray-400">(24 reviews)</span></h2>
+                        {[1,2,3].map((_, idx) => (
+                          <div key={idx} className="border border-gray-300 rounded-lg my-5">
+                            <div className="flex items-center justify-between border-gray-300 border-b-1 p-5">
+                              <div className="flex items-center gap-2">
+                                <CircleUser />
+                                <div className="font-bold">Guy Hawkins
+                                  <div className="text-yellow-500">★★★★<span className="text-gray-300">★</span></div>
+                                </div>
+                              </div>
+                              <div className="flex text-gray-400 gap-2 font-bold"> <CalendarDays /> May 13, 2025</div>
+                            </div>
+                            <p className="text-gray-500 p-5">
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatum aut impedit voluptas adipisci quos aliquid, minus vel quia eligendi qui incidunt! Quis voluptatum pariatur vero asperiores quaerat ex dolor placeat!
+                            </p>
+                          </div>
+                        ))}
+                        <div className="font-bold flex justify-center gap-1 border-2 border-gray-300 rounded-lg py-5 px-3 md:w-1/6 cursor-pointer hover:text-red-700 hover:border-red-600 transition-all duration-200">
+                          See all <ArrowRight />
+                        </div>
+
+                        <div>
+                          <h2>Review</h2>
+                        </div>
                       </div>
                     </div>
                 </div>
