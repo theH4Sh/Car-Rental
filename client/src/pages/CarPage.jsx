@@ -117,12 +117,22 @@ const CarPage = () => {
                             </p>
                           </div>
                         ))}
-                        <div className="font-bold flex justify-center gap-1 border-2 border-gray-300 rounded-lg py-5 px-3 md:w-1/6 cursor-pointer hover:text-red-700 hover:border-red-600 transition-all duration-200">
+                        <div className="my-3 font-bold flex justify-center gap-1 border-2 border-gray-300 rounded-lg py-5 px-3 md:w-1/6 cursor-pointer hover:text-red-700 hover:border-red-600 transition-all duration-200">
                           See all <ArrowRight />
                         </div>
 
                         <div>
-                          <h2>Review</h2>
+                          <h2 className="font-bold text-xl mt-5 mb-3">Review</h2>
+                          <textarea 
+                            rows="4"
+                            placeholder="Enter description..."
+                            className="border border-gray-400 rounded-sm p-1 w-full"
+                          />
+                          <div className="text-lg font-semibold flex items-center gap-3 my-3">
+                            <span>Review:</span>
+                            <span className="text-gray-300 text-xl">★★★★★</span>
+                          </div>
+                          <button className="p-3 px-7 rounded-lg cursor-pointer transition-all duration-200 border border-[#513336] bg-[#513336] text-white hover:bg-white hover:text-[#513336] font-semibold">Send Review</button>
                         </div>
                       </div>
                     </div>
