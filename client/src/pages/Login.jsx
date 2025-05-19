@@ -44,6 +44,7 @@ export default function Login() {
       localStorage.setItem('auth', JSON.stringify({
           identifier: data.identifier,
           token: data.token,
+          role: data.role,
           isAuthenticated: true
       }))
     })

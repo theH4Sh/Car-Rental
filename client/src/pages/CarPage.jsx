@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 import CarGallery from "../components/CarGallery";
-import { ArrowRight, CalendarDays, Car, CarFront, CircleUser, Cog, EllipsisVertical, Fuel, Gauge, MapPin } from "lucide-react"
+import { ArrowRight, BadgeCheck, CalendarDays, Car, CarFront, CircleUser, Cog, EllipsisVertical, Fuel, Gauge, MapPin } from "lucide-react"
 const CarPage = () => {
     const { id } = useParams()
     const { data: car, isLoading, error } = useFetch(`api/car/${id}`)
@@ -137,7 +137,7 @@ const CarPage = () => {
                             </div>
                           </div>
                         </div>
-                        <div>
+                        <div className="w-full">
                           {/* Pricing */}
                           <div className="flex flex-col w-full border border-gray-400 rounded-xl">
                             <div className="flex items-center justify-between border-b border-gray-400 px-7 py-5">
@@ -150,12 +150,15 @@ const CarPage = () => {
                           </div>
 
                           {/* Car Owner */}
-                          <div>
-                            <h3 className="font-bold text-xl">Car Owner</h3>
+                          <div className="my-5">
+                            <h3 className="font-bold text-xl my-3">Car Owner</h3>
                             <div className="px-5 rounded-lg border py-5 border-gray-400 flex justify-between items-center">
                               <div className="flex items-center gap-2">
-                                <span className="text-white font-semibold rounded-full bg-[#e93c3d] w-10 h-10 flex justify-center place-items-center">H</span>
-                                <h4 className="font-bold">Owner Name</h4>
+                                <span className="text-white font-semibold rounded-full bg-[#e93c3d] w-10 h-10 p-6 flex justify-center place-items-center">H</span>
+                                <div>
+                                  <h4 className="font-bold">Owner Name</h4>
+                                  <span className="flex items-center gap-1 text-sm bg-green-500 rounded-2xl px-2"><BadgeCheck /> Admin </span>
+                                </div>
                               </div>
                               <EllipsisVertical />
                             </div>

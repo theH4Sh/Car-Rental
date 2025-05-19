@@ -7,7 +7,7 @@ import { login } from './authSlice.js'
 
 const authData = JSON.parse(localStorage.getItem('auth'))
 
-if (authData && authData.identifier && authData.token && authData.isAuthenticated) {
+if (authData && authData.identifier && authData.token && authData.role && authData.isAuthenticated) {
   //console.log("local storage: ", authData)
   store.dispatch(login(authData))
 }
