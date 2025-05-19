@@ -42,7 +42,7 @@ export default function Login() {
       dispatch(login(data))
       toast.success("Login successful! 🎉")
       localStorage.setItem('auth', JSON.stringify({
-          identifier: data.identifier,
+          username: data.username,
           token: data.token,
           role: data.role,
           isAuthenticated: true
