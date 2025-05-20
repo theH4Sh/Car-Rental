@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 import { login } from "../authSlice";
 
 export default function Login() {
@@ -12,6 +13,7 @@ export default function Login() {
   });
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value})
@@ -47,6 +49,7 @@ export default function Login() {
           role: data.role,
           isAuthenticated: true
       }))
+      navigate('/')
     })
     .catch((err) => {
       console.log(err)
