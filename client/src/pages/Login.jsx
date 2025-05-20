@@ -56,7 +56,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="bg-slate-50 shadow-2xl rounded-2xl max-w-md w-full p-8 space-y-6">
+      <div className="bg-slate-50 shadow-2xl rounded-2xl max-w-sm w-full p-8 space-y-6">
         <h2 className="text-3xl font-bold text-center text-gray-800">Welcome Back</h2>
         <p className="text-center text-gray-500">Login to your account</p>
         <form className="space-y-4" onSubmit={handleSubmit}>
