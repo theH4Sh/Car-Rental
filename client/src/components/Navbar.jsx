@@ -57,7 +57,9 @@ const Navbar = () => {
                 }
                 {/* Hamburger for Mobile */}
                 <div className="md:hidden flex items-center">
-                    <UserDropdown auth={auth} mobile={true} />
+                    {auth.isAuthenticated ? (
+                        <UserDropdown auth={auth} mobile={true} /> ) : (<></>)
+                    }    
                     <button onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="hover:bg-gray-200 transition duration-200 h-12 w-12 flex justify-center items-center rounded-xl">
                         <div className={`transition-all duration-300 ease-in-out 
