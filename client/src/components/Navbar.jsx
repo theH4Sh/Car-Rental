@@ -30,7 +30,7 @@ const Navbar = () => {
 
     return ( 
         <nav>
-            <div className="shadow-sm md:shadow-none flex justify-between items-center md:justify-evenly p-5 md:p-0 md:py-10">
+            <div className="shadow-sm md:shadow-none flex justify-between lg:justify-evenly items-center p-5 md:p-0 md:py-10 md:px-5 lg:px-0 lg:space-x-5">
                 <div>
                     <h1 className="font-extrabold italic text-2xl text-[#e93c3d]">TOPCAR</h1>
                 </div>
