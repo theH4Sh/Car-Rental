@@ -1,4 +1,4 @@
-import { ChevronDown, LogOut, Settings, User } from "lucide-react";
+import { ChevronDown, LogOut, Settings, ShieldCheck, User } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../authSlice";
@@ -27,7 +27,7 @@ const UserDropdown = ({ auth, mobile }) => {
                     <span className="flex justify-start items-center px-4 py-1 font-bold">{auth.user}</span>
                 </div>
                 <div className="border-b border-gray-200">
-                    <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><User className="w-4 h-4" /></span> Admin</Link>
+                    <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><ShieldCheck className="w-4 h-4" /></span> Admin</Link>
                     <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><User className="w-4 h-4" /></span> Profile</Link>
                     <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100"><span><Settings className="w-4 h-4" /></span> Settings</Link>
                 </div>
