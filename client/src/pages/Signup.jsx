@@ -1,7 +1,10 @@
 import { useState} from 'react';
-import { Link } from "react-router-dom";
+import toast from 'react-hot-toast';
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Signup() {
+
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     username: "",
@@ -21,11 +24,23 @@ export default function Signup() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     })
-    .then(res => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        return res.json().then((data) => {
+          throw new Error(data.message)
+        })
+      }
+      return res.json()
+    })
     .then((res) => {
       console.log('signup successful: ', res);
+      toast.success("Signup successful! 🎉")
+      navigate('/login')
     })
-    .catch(err => console.log(err))
+    .catch((err) => {
+      console.log(err)
+      toast.error(`${err}`)
+    })
   }
 
   return (

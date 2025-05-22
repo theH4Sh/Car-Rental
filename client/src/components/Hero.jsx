@@ -6,7 +6,7 @@ const Hero = () => {
                     <h1 className="text-5xl font-bold text-[#331512]">Buy, sell & rent</h1>
                     <h1 className="text-5xl font-bold text-[#e93c3b]">reputable cars</h1>
                 </div>
-                <div className="font-semibold w-[340px] text-[#513336]">
+                <div className="font-semibold w-full text-[#513336]">
                     <p>Buy and sell reputable cars. Renting car is easy and fast with Topcar</p>
                 </div>
                 <div className="flex items-center justify-evenly text-[#513336]">
@@ -20,7 +20,7 @@ const Hero = () => {
                     </div>
                 </div>
             </div>
-            <div className='w-[480px]'>
+            <div className='w-[280px] md:w-[480px]'>
                 <img src="/ferrari.png" alt="ferrari" />
             </div>
         </div>
