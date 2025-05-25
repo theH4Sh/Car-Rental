@@ -41,7 +41,7 @@ const UserDropdown = ({ auth, mobile }) => {
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${ open ? 'rotate-180' : ''}`} />
             </div>
 
-            <div className={`z-10 bg-white absolute right-0 top-full mt-2 w-40 rounded-lg shadow-lg py-2 border border-gray-200 text-sm text-gray-600 transition-all duration-300 ${ open ? 'ease-out opacity-100' : 'hidden opacity-0'}`}>
+            <div className={`z-10 bg-white absolute right-0 top-full mt-2 w-40 rounded-lg shadow-lg py-2 border border-gray-200 text-sm text-gray-600 transition-all duration-300 ${ open ? 'ease-out opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-0 pointer-events-none'}`}>
                 {mobile && (
                     <div className={'py-2 border-b border-gray-200'}>
                         <span className="flex justify-start items-center px-4 py-1">Signed in as</span>
