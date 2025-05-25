@@ -35,7 +35,7 @@ const UserDropdown = ({ auth, mobile }) => {
             >
                 <div 
                 className="text-white font-semibold rounded-full bg-[#e93c3d] w-10 h-10 flex justify-center place-items-center">
-                    H
+                    {auth.user.charAt(0).toUpperCase()}
                 </div>
                 <span className={`font-semibold ${mobile ? 'hidden' : 'block'}`}>{auth.user}</span>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${ open ? 'rotate-180' : ''}`} />
