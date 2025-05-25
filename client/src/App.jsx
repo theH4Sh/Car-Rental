@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useSelector } from "react-redux";
 import CarPage from "./pages/CarPage";
+import Profile from "./pages/Profile";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path='contact' element={<Contact />} />
         <Route path='login' element={auth.isAuthenticated ? <Navigate to='/' /> : <Login />} />
         <Route path='signup' element={auth.isAuthenticated ? <Navigate to='/' /> :<Signup />} />
+        <Route path='profile' element={<Profile />} />
         <Route path='details/:id' element={<CarPage />} />
       </Route>
     )
