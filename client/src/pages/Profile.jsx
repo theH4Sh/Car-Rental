@@ -1,55 +1,40 @@
-import { Calendar, Locate, Mail, MapPin, User } from "lucide-react";
+import { Calendar, Mail, MapPin, User } from "lucide-react";
 
 const Profile = () => {
-    return ( 
-        <div className="md:p-5">
-            <div className="border border-gray-500">
-                <div className="flex items-center space-x-3 bg-gray-300 p-5 border-b border-gray-400">
-                    <div className="text-white font-semibold rounded-full bg-[#e93c3d] w-16 h-16 flex justify-center place-items-center">
+    return (
+        <div className="md:mx-5 lg:mx-auto min-h-screen lg:max-w-5xl md:py-8 md:px-4">
+            <div className="shadow-sm rounded-lg overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center space-x-4 bg-gray-50 p-6 border-b border-gray-300">
+                    <div className="text-white font-semibold rounded-full bg-[#e93c3d] py-5 px-7 md:w-16 md:h-16 flex justify-center items-center text-2xl">
                         N
                     </div>
                     <div>
                         <h1 className="font-bold text-2xl">Username</h1>
-                        <p className="text-gray-500">Personal details and account information</p>
+                        <p className="text-gray-600">Personal details and account information</p>
                     </div>
                 </div>
 
-                <div className="p-3 space-y-3 text-sm">
-                    <div className="flex items-center space-x-2 text-gray-600">
-                        <User className="w-4" />
-                        <h3>Full name</h3>
-                    </div>
-                    <p>Username123</p>
-                </div>
-
-                <div className="p-3 space-y-3 text-sm">
-                    <div className="flex items-center space-x-2 text-gray-600">
-                        <Mail className="w-4" />
-                        <h3>Email</h3>
-                    </div>
-                    <p>email@gmail.com</p>
-                </div>
-
-                <div className="p-3 space-y-3 text-sm">
-                    <div className="flex items-center space-x-2 text-gray-600">
-                        <MapPin className="w-4" />
-                        <h3>Address</h3>
-                    </div>
-                    <p>123 Main Street, Apt 4B
-New York, NY 10001
-United States</p>
-                </div>
-
-                <div className="p-3 space-y-3 text-sm">
-                    <div className="flex items-center space-x-2 text-gray-600">
-                        <Calendar className="w-4" />
-                        <h3>Member since</h3>
-                    </div>
-                    <p>Jan 15, 2025</p>
+                {/* Detail Rows */}
+                <div className="divide-y divide-gray-200 text-sm text-gray-700">
+                    <DetailRow icon={<User className="w-4 h-4" />} label="Full name" value="Username123" />
+                    <DetailRow icon={<Mail className="w-4 h-4" />} label="Email" value="email@gmail.com" />
+                    <DetailRow icon={<MapPin className="w-4 h-4" />} label="Address" value={`123 Main Street, Apt 4B\nNew York, NY 10001\nUnited States`} />
+                    <DetailRow icon={<Calendar className="w-4 h-4" />} label="Member since" value="Jan 15, 2025" />
                 </div>
             </div>
         </div>
-     );
-}
- 
+    );
+};
+
+const DetailRow = ({ icon, label, value }) => (
+    <div className="even:bg-gray-50 flex flex-col md:flex-row md:items-start md:space-x-10 px-6 py-4">
+        <div className="flex items-center space-x-2 w-40 text-gray-600 font-medium">
+            {icon}
+            <span>{label}</span>
+        </div>
+        <p className="whitespace-pre-line">{value}</p>
+    </div>
+);
+
 export default Profile;
