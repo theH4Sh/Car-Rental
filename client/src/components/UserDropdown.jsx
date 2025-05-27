@@ -50,7 +50,7 @@ const UserDropdown = ({ auth, mobile }) => {
                 ) }
                 <div className="border-b border-gray-200">
                     <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100" to="admin" ><span><ShieldCheck className="w-4 h-4" /></span> Admin</Link>
-                    <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100" to="profile" ><span><User className="w-4 h-4" /></span> Profile</Link>
+                    <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100" to={`profile/${auth.user}`} ><span><User className="w-4 h-4" /></span> Profile</Link>
                     <Link className="flex justify-start items-center px-4 py-2 gap-2 hover:bg-gray-100" to="settings" ><span><Settings className="w-4 h-4" /></span> Settings</Link>
                 </div>
                 <button onClick={handleLogout}

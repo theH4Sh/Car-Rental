@@ -1,6 +1,15 @@
 import { Calendar, Mail, MapPin, User } from "lucide-react";
+import { useFetch } from "../hooks/useFetch";
+import { useParams } from "react-router-dom";
 
 const Profile = () => {
+
+    const { username } = useParams()
+
+    const { data: user, isLoading, error } = useFetch(`api/${username}`)
+
+    console.log(user)
+
     return (
         <div className="md:mx-5 lg:mx-auto min-h-screen lg:max-w-5xl md:py-8 md:px-4">
             <div className="shadow-sm rounded-lg overflow-hidden">
@@ -10,7 +19,7 @@ const Profile = () => {
                         N
                     </div>
                     <div>
-                        <h1 className="font-bold text-2xl">Username</h1>
+                        <h1 className="font-bold text-2xl">{username}</h1>
                         <p className="text-gray-600">Personal details and account information</p>
                     </div>
                 </div>
