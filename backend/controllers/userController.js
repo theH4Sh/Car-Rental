@@ -38,4 +38,18 @@ const signUpUser = async (req, res, next) => {
     }
 }
 
-module.exports = { loginUser, signUpUser }
+const getUser = async (req, res, next) => {
+    const { username } = req.params
+
+    try {
+        const user = await User.find({ username })
+        if (user.length == 0) {
+            return res.status(404).json({error: 'user not found'})
+        }
+        res.status(200).json(user)
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { loginUser, signUpUser, getUser }
