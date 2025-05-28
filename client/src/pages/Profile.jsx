@@ -5,11 +5,11 @@ import { data, useParams } from "react-router-dom";
 const Profile = () => {
 
     const { username } = useParams()
-    console.log("params: " + username )
+    //console.log("params: " + username )
 
     const { data: user , isLoading, error } = useFetch(`api/${username}`)
 
-    isLoading ? console.log('loading') : console.log("user: ", user)
+    //isLoading ? console.log('loading') : console.log("user: ", user)
 
     return (
         <div className="md:mx-5 lg:mx-auto min-h-screen lg:max-w-5xl md:py-8 md:px-4">

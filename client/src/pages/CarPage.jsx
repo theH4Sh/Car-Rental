@@ -95,7 +95,7 @@ const CarPage = () => {
                           <div>
                             <h2 className="text-xl font-bold mb-2">Description</h2>
                             <p className="text-gray-500">
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatum aut impedit voluptas adipisci quos aliquid, minus vel quia eligendi qui incidunt! Quis voluptatum pariatur vero asperiores quaerat ex dolor placeat!
+                            {car.description}
                             </p>
                           </div>
 
@@ -142,7 +142,7 @@ const CarPage = () => {
                           <div className="flex flex-col w-full border border-gray-400 rounded-xl">
                             <div className="flex items-center justify-between border-b border-gray-400 px-7 py-5">
                               <h4 className="text-gray-400 font-bold text-xl md:text-lg lg:text-xl">Price</h4>
-                              <h2 className="text-3xl md:text-xl lg:text-3xl font-bold">$43,000</h2>
+                              <h2 className="text-3xl md:text-xl lg:text-3xl font-bold">${car.pricePerDay}</h2>
                             </div>
                             <div className="px-7 py-5">
                               <button className="bg-[#e93c3d] p-3 w-full rounded-lg text-white font-bold">Book Now</button>
