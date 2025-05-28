@@ -42,7 +42,7 @@ const getUser = async (req, res, next) => {
     const { username } = req.params
 
     try {
-        const user = await User.find({ username })
+        const user = await User.findOne({ username }).select("-password")
         if (user.length == 0) {
             return res.status(404).json({error: 'user not found'})
         }
