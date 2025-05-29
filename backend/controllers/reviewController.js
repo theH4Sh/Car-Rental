@@ -13,7 +13,7 @@ const createReview = async (req, res, next) => {
     if (!Number.isInteger(rating)) {
         return res.status(400).json({ error: "Rating must be an integer between 1 and 5"})
     }
-    
+
     try {
         const review = new Review({
             user: userId,
@@ -37,7 +37,9 @@ const getReviews = async (req, res, next) => {
     }
 
     try {
-        const reviews = await Review.find({ car: carId }).populate('user', 'username')
+        const reviews = await Review.find({ car: carId })
+            .populate('user', 'username')
+            .sort({ createdAt: -1 })
 
         if (reviews.length == 0) {
             return res.status(404).json({ error: 'No reviews'})
