@@ -6,6 +6,7 @@ const morgan = require('morgan')
 require('dotenv').config()
 
 const userRoutes = require('./routes/userRoutes')
+const reviewRoutes = require('./routes/reviewRoutes')
 
 const app = express()
 const cors = require('cors')
@@ -25,6 +26,7 @@ mongoose.connect(process.env.MONGO_URI)
 //API Routes
 app.use('/api', carRoutes)
 app.use('/api', userRoutes)
+app.use('/api/reviews', reviewRoutes)
 
 //Error Handling
 app.use((err, req, res, next) => {
