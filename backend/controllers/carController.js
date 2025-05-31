@@ -33,7 +33,12 @@ exports.getAllCars = async (req, res, next) => {
 
 exports.getCarById = async (req, res, next) => {
     try {
-        const car = await Car.findById(req.params.id);
+        const car = await Car.findById(req.params.id)
+            .populate({
+                path: 'reviews',
+                options : { limit: 5 },
+                populate: { path: 'user', select: 'username' }
+            })
         
         if (!car) {
             const error = new Error('Car not found')
