@@ -1,10 +1,11 @@
 const express = require('express')
-const  { getReviews, createReview } = require('../controllers/reviewController')
+const  { getReviews, createReview, updateReview } = require('../controllers/reviewController')
 const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router();
 
 router.post('/:carId', requireAuth, createReview)
 router.get('/:carId', getReviews)
+router.put('/:id', requireAuth, updateReview)
 
 module.exports = router

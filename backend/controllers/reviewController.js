@@ -29,6 +29,22 @@ const createReview = async (req, res, next) => {
     }
 }
 
+const updateReview = async (req, res, next) => {
+    try {
+        const review = await Review.findOneAndUpdate({
+            _id: req.params.id,
+            user: req.user._id
+        }, 
+        { $set: { rating: req.body.rating, comment:req.body.comment }},
+        { new: true }
+        ).populate('user', 'username')
+
+        res.json(review)
+    } catch (error) {
+        next(error)
+    }
+}
+
 const getReviews = async (req, res, next) => {
     const { carId } = req.params
 
@@ -51,4 +67,4 @@ const getReviews = async (req, res, next) => {
     }
 }
 
-module.exports = { createReview, getReviews }
+module.exports = { createReview, updateReview, getReviews }
