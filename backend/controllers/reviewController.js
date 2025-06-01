@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Review = require('../models/Review') 
+const { findOneAndDelete } = require('../models/Car')
 
 const createReview = async (req, res, next) => {
     const { rating, comment } = req.body
@@ -67,4 +68,23 @@ const getReviews = async (req, res, next) => {
     }
 }
 
-module.exports = { createReview, updateReview, getReviews }
+const deleteReview = async (req, res, next) => {
+    const { id } = req.params
+    const userId = req.user._id
+
+    try {
+        const review = await Review.findOneAndDelete({
+            _id: id,
+            user: userId
+        })
+
+        if (!review) {
+            return res.status(404).json({ error: "Review not found", userID: userId})
+        }
+
+        res.status(201).json(review)
+    } catch (error) {
+        next(error)
+    }
+}
+module.exports = { createReview, updateReview, getReviews, deleteReview }
