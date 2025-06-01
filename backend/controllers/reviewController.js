@@ -82,7 +82,7 @@ const deleteReview = async (req, res, next) => {
             return res.status(404).json({ error: "Review not found", userID: userId})
         }
 
-        res.status(201).json(review)
+        res.status(200).json(review)
     } catch (error) {
         next(error)
     }
