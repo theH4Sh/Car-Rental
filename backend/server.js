@@ -7,6 +7,7 @@ require('dotenv').config()
 
 const userRoutes = require('./routes/userRoutes')
 const reviewRoutes = require('./routes/reviewRoutes')
+const bookingRoutes = require('./routes/bookingRoutes')
 
 const app = express()
 const cors = require('cors')
@@ -27,6 +28,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use('/api', carRoutes)
 app.use('/api', userRoutes)
 app.use('/api/reviews', reviewRoutes)
+app.use('/api/booking', bookingRoutes)
 
 //Error Handling
 app.use((err, req, res, next) => {
