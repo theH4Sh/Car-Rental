@@ -5,7 +5,7 @@ const createBooking = async (req, res, next) => {
     const userId = req.user._id
 
     try {
-        const conflictBooking = Booking.findOne({
+        const conflictBooking = await Booking.findOne({
         car: carId,
             status: 'confirmed',
             $not: {
@@ -30,8 +30,8 @@ const createBooking = async (req, res, next) => {
             endDate: endDate
         })
 
-        await review.save()
-        res.status(201).json(booking)
+        await booking.save()
+        res.status(201).json({ booking })
     } catch (error) {
         next(error)
     }
