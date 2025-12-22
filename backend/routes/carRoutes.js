@@ -1,12 +1,15 @@
 const express = require('express');
-const { createCar, getAllCars, getCarById, deleteCar } = require('../controllers/carController')
+const { createCar, getAllCars, getCarById, updateCar, deleteCar } = require('../controllers/carController')
 const upload = require('../middleware/upload')
+const requireAuth = require('../middleware/requireAuth')
+const requireAdmin = require('../middleware/requireAdmin')
 
 const router = express.Router();
 
-router.post('/car', upload.single('carImage'), createCar);
 router.get('/car', getAllCars);
 router.get('/car/:id', getCarById);
-router.delete('/car/:id', deleteCar);
+router.post('/car', requireAuth, requireAdmin, upload.single('carImage'), createCar);
+router.put('/car/:id', requireAuth, requireAdmin, upload.single('carImage'), updateCar);
+router.delete('/car/:id', requireAuth, requireAdmin, deleteCar);
 
 module.exports = router

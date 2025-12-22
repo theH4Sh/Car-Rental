@@ -8,6 +8,7 @@ require('dotenv').config()
 const userRoutes = require('./routes/userRoutes')
 const reviewRoutes = require('./routes/reviewRoutes')
 const bookingRoutes = require('./routes/bookingRoutes')
+const adminRoutes = require('./routes/adminRoutes')
 
 const app = express()
 const cors = require('cors')
@@ -29,6 +30,7 @@ app.use('/api', carRoutes)
 app.use('/api', userRoutes)
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/booking', bookingRoutes)
+app.use('/api/admin', adminRoutes)
 
 //Error Handling
 app.use((err, req, res, next) => {
