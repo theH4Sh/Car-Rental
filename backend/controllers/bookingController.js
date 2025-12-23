@@ -11,17 +11,18 @@ const createBooking = async (req, res, next) => {
 
         const start = new Date(startDate)
         const end = new Date(endDate)
-        const now = new Date()
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
 
         if (isNaN(start) || isNaN(end)) {
             return res.status(400).json({ error: 'Invalid date format' })
         }
 
-        if (start >= end) {
+        if (start > end) {
             return res.status(400).json({ error: 'End date must be after start date' })
         }
 
-        if (start < now) {
+        if (start < today) {
             return res.status(400).json({ error: 'Start date cannot be in the past' })
         }
 
@@ -46,7 +47,7 @@ const createBooking = async (req, res, next) => {
             car: carId,
             startDate: start,
             endDate: end,
-            status: 'confirmed'
+            status: 'pending'
         })
 
         await booking.save()
