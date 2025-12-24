@@ -26,13 +26,12 @@ const createBooking = async (req, res, next) => {
             return res.status(400).json({ error: 'Start date cannot be in the past' })
         }
 
+        // Inclusive ranges so same-day bookings (start === end) still conflict correctly
         const conflictBooking = await Booking.findOne({
             car: carId,
             status: 'confirmed',
-            $and: [
-                { startDate: { $lt: end } },
-                { endDate: { $gt: start } }
-            ]
+            startDate: { $lte: end },
+            endDate: { $gte: start },
         })
 
         if (conflictBooking) {

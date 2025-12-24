@@ -102,10 +102,8 @@ const updateBookingStatus = async (req, res, next) => {
                 _id: { $ne: booking._id },
                 car: booking.car,
                 status: 'confirmed',
-                $and: [
-                    { startDate: { $lt: booking.endDate } },
-                    { endDate: { $gt: booking.startDate } },
-                ],
+                startDate: { $lte: booking.endDate },
+                endDate: { $gte: booking.startDate },
             })
 
             if (conflict) {

@@ -38,7 +38,15 @@ const daysBetween = (start, end) => {
   const s = new Date(start)
   const e = new Date(end)
   const ms = e.setHours(0, 0, 0, 0) - s.setHours(0, 0, 0, 0)
-  return Math.max(0, Math.round(ms / (1000 * 60 * 60 * 24)))
+  return Math.round(ms / (1000 * 60 * 60 * 24))
+}
+
+/** Same calendar day = 1 day rental; Aug 3→Aug 4 = 1 day, etc. */
+const rentalDayCount = (start, end) => {
+  if (!start || !end) return 0
+  const diff = daysBetween(start, end)
+  if (diff < 0) return 0
+  return Math.max(1, diff)
 }
 
 const todayISO = () => new Date().toISOString().slice(0, 10)
@@ -92,7 +100,7 @@ const CarPage = () => {
     return Math.round((sum / reviews.length) * 10) / 10
   }, [reviews])
 
-  const rentalDays = startDate && endDate ? daysBetween(startDate, endDate) : 0
+  const rentalDays = rentalDayCount(startDate, endDate)
   const totalPrice = car && rentalDays > 0 ? rentalDays * car.pricePerDay : 0
 
   const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 3)
@@ -114,8 +122,8 @@ const CarPage = () => {
       return
     }
 
-    if (rentalDays < 1) {
-      toast.error('End date must be after start date')
+    if (endDate < startDate) {
+      toast.error('End date cannot be before start date')
       return
     }
 
