@@ -1,6 +1,6 @@
 import Card from "../components/Card";
 import Hero from "../components/Hero";
-import SearchCard from "../components/SearchCard";4
+import SearchCard from "../components/SearchCard";
 import SkeletonCard from "../components/SkeletonCard";
 import { useFetch } from "../hooks/useFetch";
 import { Link } from 'react-router-dom'
