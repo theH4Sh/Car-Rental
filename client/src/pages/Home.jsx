@@ -23,8 +23,10 @@ const Home = () => {
                         <Link to={`details/${car._id}`} key={car._id}>
                             <Card 
                             carName={car.name} 
-                            location="Tokyo" 
+                            location={car.location || car.brand} 
                             price={car.pricePerDay}
+                            seats={car.seats}
+                            fuelType={car.fuelType}
                             image={import.meta.env.VITE_API + 'images/' + car.image}
                             />
                         </Link>

@@ -1,17 +1,34 @@
 const Car = require('../models/Car')
+const { FUEL_TYPES } = require('../models/Car')
 const fs = require('fs')
 const path = require('path')
 
+const parseSeats = (value) => {
+    const seats = Number(value)
+    return Number.isInteger(seats) ? seats : NaN
+}
+
 exports.createCar = async (req, res, next) => {
     try {
-        const { name, brand, pricePerDay, description } = req.body
+        const { name, brand, pricePerDay, description, location, fuelType } = req.body
+        const seats = parseSeats(req.body.seats)
 
         if (!req.file) {
             return res.status(400).json({ error: 'Car image is required' })
         }
 
-        if (!name || !brand || !pricePerDay || !description) {
+        if (!name || !brand || !pricePerDay || !description || !location || !fuelType) {
             return res.status(400).json({ error: 'All fields are required' })
+        }
+
+        if (!Number.isInteger(seats) || seats < 1 || seats > 20) {
+            return res.status(400).json({ error: 'Seats must be a number between 1 and 20' })
+        }
+
+        if (!FUEL_TYPES.includes(String(fuelType).toLowerCase())) {
+            return res.status(400).json({
+                error: `Fuel type must be one of: ${FUEL_TYPES.join(', ')}`,
+            })
         }
 
         const newCar = new Car({
@@ -19,7 +36,10 @@ exports.createCar = async (req, res, next) => {
             brand,
             pricePerDay,
             description,
-            image: req.file.filename
+            seats,
+            location,
+            fuelType: String(fuelType).toLowerCase(),
+            image: req.file.filename,
         })
         await newCar.save()
         res.status(201).json(newCar)
@@ -60,7 +80,7 @@ exports.getCarById = async (req, res, next) => {
 
 exports.updateCar = async (req, res, next) => {
     try {
-        const { name, brand, pricePerDay, description } = req.body
+        const { name, brand, pricePerDay, description, location, fuelType } = req.body
         const car = await Car.findById(req.params.id)
 
         if (!car) {
@@ -71,6 +91,24 @@ exports.updateCar = async (req, res, next) => {
         if (brand) car.brand = brand
         if (pricePerDay) car.pricePerDay = pricePerDay
         if (description) car.description = description
+        if (location) car.location = location
+
+        if (req.body.seats !== undefined && req.body.seats !== '') {
+            const seats = parseSeats(req.body.seats)
+            if (!Number.isInteger(seats) || seats < 1 || seats > 20) {
+                return res.status(400).json({ error: 'Seats must be a number between 1 and 20' })
+            }
+            car.seats = seats
+        }
+
+        if (fuelType) {
+            if (!FUEL_TYPES.includes(String(fuelType).toLowerCase())) {
+                return res.status(400).json({
+                    error: `Fuel type must be one of: ${FUEL_TYPES.join(', ')}`,
+                })
+            }
+            car.fuelType = String(fuelType).toLowerCase()
+        }
 
         if (req.file) {
             const oldImage = path.join('images', car.image)

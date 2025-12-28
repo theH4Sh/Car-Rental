@@ -11,7 +11,6 @@ import {
   CircleUser,
   Cog,
   Fuel,
-  Gauge,
   MapPin,
 } from 'lucide-react'
 import { apiFetch } from '../utils/api'
@@ -209,7 +208,7 @@ const CarPage = () => {
 
         <div className="my-5 flex space-x-2 font-bold text-gray-700">
           <MapPin />
-          <h4>{car.brand}</h4>
+          <h4>{car.location || car.brand}</h4>
         </div>
 
         <div className="md:flex md:items-start md:gap-10">
@@ -218,8 +217,44 @@ const CarPage = () => {
               <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
                 <img className="w-8 h-8 ml-3" src="/carseat.png" alt="car seat" />
                 <div className="leading-tight">
+                  <span className="text-gray-500">Seats</span>
+                  <h6 className="font-semibold text-base">
+                    {car.seats != null ? `${car.seats} seats` : '—'}
+                  </h6>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
+                <Fuel className="ml-4" />
+                <div className="leading-tight">
+                  <span className="text-gray-500">Fuel</span>
+                  <h6 className="font-semibold text-base capitalize">
+                    {car.fuelType || '—'}
+                  </h6>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
+                <MapPin className="ml-4" />
+                <div className="leading-tight">
+                  <span className="text-gray-500">Location</span>
+                  <h6 className="font-semibold text-base">{car.location || '—'}</h6>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
+                <CarFront className="ml-4" />
+                <div className="leading-tight">
                   <span className="text-gray-500">Brand</span>
                   <h6 className="font-semibold text-base">{car.brand}</h6>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
+                <Car className="ml-4" />
+                <div className="leading-tight">
+                  <span className="text-gray-500">Model</span>
+                  <h6 className="font-semibold text-base">{car.name}</h6>
                 </div>
               </div>
 
@@ -228,38 +263,6 @@ const CarPage = () => {
                 <div className="leading-tight">
                   <span className="text-gray-500">Price</span>
                   <h6 className="font-semibold text-base">${car.pricePerDay}/day</h6>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
-                <Fuel className="ml-4" />
-                <div className="leading-tight">
-                  <span className="text-gray-500">Fuel</span>
-                  <h6 className="font-semibold text-base">Petrol</h6>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
-                <CarFront className="ml-4" />
-                <div className="leading-tight">
-                  <span className="text-gray-500">Model</span>
-                  <h6 className="font-semibold text-base">{car.name}</h6>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
-                <Car className="ml-4" />
-                <div className="leading-tight">
-                  <span className="text-gray-500">Type</span>
-                  <h6 className="font-semibold text-base">Rental</h6>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 border border-gray-300 rounded-lg py-2">
-                <Gauge className="ml-4" />
-                <div className="leading-tight">
-                  <span className="text-gray-500">Status</span>
-                  <h6 className="font-semibold text-base">Available</h6>
                 </div>
               </div>
             </div>

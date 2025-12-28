@@ -3,11 +3,16 @@ import { Plus, Pencil, Trash2, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { apiFetch, imageUrl } from '../../utils/api'
 
+const FUEL_TYPES = ['petrol', 'diesel', 'electric', 'hybrid']
+
 const emptyForm = {
     name: '',
     brand: '',
     pricePerDay: '',
     description: '',
+    seats: '',
+    location: '',
+    fuelType: 'petrol',
 }
 
 const AdminCars = () => {
@@ -47,6 +52,9 @@ const AdminCars = () => {
             brand: car.brand,
             pricePerDay: String(car.pricePerDay),
             description: car.description,
+            seats: car.seats != null ? String(car.seats) : '',
+            location: car.location || '',
+            fuelType: car.fuelType || 'petrol',
         })
         setImage(null)
         setPreview(imageUrl(car.image))
@@ -78,6 +86,9 @@ const AdminCars = () => {
             body.append('brand', form.brand)
             body.append('pricePerDay', form.pricePerDay)
             body.append('description', form.description)
+            body.append('seats', form.seats)
+            body.append('location', form.location)
+            body.append('fuelType', form.fuelType)
             if (image) body.append('carImage', image)
 
             if (editing) {
@@ -164,7 +175,18 @@ const AdminCars = () => {
                                         <span className="text-stone-400 font-normal text-xs">/day</span>
                                     </p>
                                 </div>
-                                <p className="text-sm text-stone-500 mt-2 line-clamp-2 flex-1">{car.description}</p>
+                                <p className="text-sm text-stone-500 mt-2 line-clamp-2">{car.description}</p>
+                                <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium text-stone-600">
+                                    {car.location && (
+                                        <span className="px-2 py-1 rounded-md bg-stone-100">{car.location}</span>
+                                    )}
+                                    {car.seats != null && (
+                                        <span className="px-2 py-1 rounded-md bg-stone-100">{car.seats} seats</span>
+                                    )}
+                                    {car.fuelType && (
+                                        <span className="px-2 py-1 rounded-md bg-stone-100 capitalize">{car.fuelType}</span>
+                                    )}
+                                </div>
                                 <div className="flex gap-2 mt-4">
                                     <button
                                         type="button"
@@ -228,16 +250,58 @@ const AdminCars = () => {
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-stone-700 mb-1">Price per day ($)</label>
-                                <input
-                                    required
-                                    type="number"
-                                    min="1"
-                                    value={form.pricePerDay}
-                                    onChange={(e) => setForm({ ...form, pricePerDay: e.target.value })}
-                                    className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d]"
-                                />
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-1">Price per day ($)</label>
+                                    <input
+                                        required
+                                        type="number"
+                                        min="1"
+                                        value={form.pricePerDay}
+                                        onChange={(e) => setForm({ ...form, pricePerDay: e.target.value })}
+                                        className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d]"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-1">Seats</label>
+                                    <input
+                                        required
+                                        type="number"
+                                        min="1"
+                                        max="20"
+                                        value={form.seats}
+                                        onChange={(e) => setForm({ ...form, seats: e.target.value })}
+                                        className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d]"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-1">Location</label>
+                                    <input
+                                        required
+                                        value={form.location}
+                                        onChange={(e) => setForm({ ...form, location: e.target.value })}
+                                        placeholder="e.g. Tokyo"
+                                        className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d]"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-1">Fuel type</label>
+                                    <select
+                                        required
+                                        value={form.fuelType}
+                                        onChange={(e) => setForm({ ...form, fuelType: e.target.value })}
+                                        className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] bg-white capitalize"
+                                    >
+                                        {FUEL_TYPES.map((type) => (
+                                            <option key={type} value={type} className="capitalize">
+                                                {type.charAt(0).toUpperCase() + type.slice(1)}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <div>
