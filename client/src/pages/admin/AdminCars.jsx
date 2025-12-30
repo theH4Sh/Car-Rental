@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Plus, Pencil, Trash2, X } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { apiFetch, imageUrl } from '../../utils/api'
+import { apiFetch, carCover, carImages, imageUrl } from '../../utils/api'
 
 const FUEL_TYPES = ['petrol', 'diesel', 'electric', 'hybrid']
+const MAX_IMAGES = 10
 
 const emptyForm = {
     name: '',
@@ -21,8 +22,9 @@ const AdminCars = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [editing, setEditing] = useState(null)
     const [form, setForm] = useState(emptyForm)
-    const [image, setImage] = useState(null)
-    const [preview, setPreview] = useState('')
+    const [existingImages, setExistingImages] = useState([])
+    const [removedImages, setRemovedImages] = useState([])
+    const [newFiles, setNewFiles] = useState([])
     const [saving, setSaving] = useState(false)
 
     const loadCars = () => {
@@ -37,11 +39,16 @@ const AdminCars = () => {
         loadCars()
     }, [])
 
+    const resetImages = () => {
+        setExistingImages([])
+        setRemovedImages([])
+        setNewFiles([])
+    }
+
     const openCreate = () => {
         setEditing(null)
         setForm(emptyForm)
-        setImage(null)
-        setPreview('')
+        resetImages()
         setModalOpen(true)
     }
 
@@ -56,8 +63,9 @@ const AdminCars = () => {
             location: car.location || '',
             fuelType: car.fuelType || 'petrol',
         })
-        setImage(null)
-        setPreview(imageUrl(car.image))
+        setExistingImages(carImages(car))
+        setRemovedImages([])
+        setNewFiles([])
         setModalOpen(true)
     }
 
@@ -65,19 +73,50 @@ const AdminCars = () => {
         setModalOpen(false)
         setEditing(null)
         setForm(emptyForm)
-        setImage(null)
-        setPreview('')
+        resetImages()
     }
 
+    const remainingSlots = MAX_IMAGES - existingImages.length - newFiles.length
+
     const handleImageChange = (e) => {
-        const file = e.target.files?.[0]
-        if (!file) return
-        setImage(file)
-        setPreview(URL.createObjectURL(file))
+        const files = Array.from(e.target.files || [])
+        e.target.value = ''
+        if (!files.length) return
+
+        if (files.length > remainingSlots) {
+            toast.error(`You can add up to ${MAX_IMAGES} images total`)
+        }
+
+        const next = files.slice(0, Math.max(0, remainingSlots)).map((file) => ({
+            file,
+            preview: URL.createObjectURL(file),
+        }))
+        setNewFiles((prev) => [...prev, ...next])
+    }
+
+    const removeExisting = (filename) => {
+        setExistingImages((prev) => prev.filter((img) => img !== filename))
+        setRemovedImages((prev) => [...prev, filename])
+    }
+
+    const removeNew = (index) => {
+        setNewFiles((prev) => {
+            const copy = [...prev]
+            const [removed] = copy.splice(index, 1)
+            if (removed?.preview) URL.revokeObjectURL(removed.preview)
+            return copy
+        })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const totalImages = existingImages.length + newFiles.length
+        if (totalImages < 1) {
+            toast.error('Add at least one image')
+            return
+        }
+
         setSaving(true)
 
         try {
@@ -89,17 +128,15 @@ const AdminCars = () => {
             body.append('seats', form.seats)
             body.append('location', form.location)
             body.append('fuelType', form.fuelType)
-            if (image) body.append('carImage', image)
+            newFiles.forEach(({ file }) => body.append('carImages', file))
 
             if (editing) {
+                if (removedImages.length) {
+                    body.append('removedImages', JSON.stringify(removedImages))
+                }
                 await apiFetch(`api/car/${editing._id}`, { method: 'PUT', body })
                 toast.success('Car updated')
             } else {
-                if (!image) {
-                    toast.error('Car image is required')
-                    setSaving(false)
-                    return
-                }
                 await apiFetch('api/car', { method: 'POST', body })
                 toast.success('Car created')
             }
@@ -154,59 +191,70 @@ const AdminCars = () => {
                 </div>
             ) : (
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                    {cars.map((car) => (
-                        <article
-                            key={car._id}
-                            className="bg-white rounded-2xl border border-stone-200/80 overflow-hidden flex flex-col"
-                        >
-                            <img
-                                src={imageUrl(car.image)}
-                                alt={car.name}
-                                className="h-40 w-full object-cover bg-stone-100"
-                            />
-                            <div className="p-4 flex-1 flex flex-col">
-                                <div className="flex items-start justify-between gap-2">
-                                    <div>
-                                        <p className="text-xs uppercase tracking-wider text-stone-400">{car.brand}</p>
-                                        <h3 className="font-semibold text-[#2c090a]">{car.name}</h3>
+                    {cars.map((car) => {
+                        const cover = carCover(car)
+                        const count = carImages(car).length
+                        return (
+                            <article
+                                key={car._id}
+                                className="bg-white rounded-2xl border border-stone-200/80 overflow-hidden flex flex-col"
+                            >
+                                <div className="relative">
+                                    <img
+                                        src={imageUrl(cover)}
+                                        alt={car.name}
+                                        className="h-40 w-full object-cover bg-stone-100"
+                                    />
+                                    {count > 1 && (
+                                        <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md">
+                                            {count} photos
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="p-4 flex-1 flex flex-col">
+                                    <div className="flex items-start justify-between gap-2">
+                                        <div>
+                                            <p className="text-xs uppercase tracking-wider text-stone-400">{car.brand}</p>
+                                            <h3 className="font-semibold text-[#2c090a]">{car.name}</h3>
+                                        </div>
+                                        <p className="text-[#e93c3d] font-semibold whitespace-nowrap">
+                                            ${car.pricePerDay}
+                                            <span className="text-stone-400 font-normal text-xs">/day</span>
+                                        </p>
                                     </div>
-                                    <p className="text-[#e93c3d] font-semibold whitespace-nowrap">
-                                        ${car.pricePerDay}
-                                        <span className="text-stone-400 font-normal text-xs">/day</span>
-                                    </p>
+                                    <p className="text-sm text-stone-500 mt-2 line-clamp-2">{car.description}</p>
+                                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium text-stone-600">
+                                        {car.location && (
+                                            <span className="px-2 py-1 rounded-md bg-stone-100">{car.location}</span>
+                                        )}
+                                        {car.seats != null && (
+                                            <span className="px-2 py-1 rounded-md bg-stone-100">{car.seats} seats</span>
+                                        )}
+                                        {car.fuelType && (
+                                            <span className="px-2 py-1 rounded-md bg-stone-100 capitalize">{car.fuelType}</span>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2 mt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => openEdit(car)}
+                                            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-stone-200 text-sm hover:bg-stone-50 transition-colors"
+                                        >
+                                            <Pencil className="w-3.5 h-3.5" />
+                                            Edit
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete(car)}
+                                            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-red-200 text-red-600 text-sm hover:bg-red-50 transition-colors"
+                                        >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
                                 </div>
-                                <p className="text-sm text-stone-500 mt-2 line-clamp-2">{car.description}</p>
-                                <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium text-stone-600">
-                                    {car.location && (
-                                        <span className="px-2 py-1 rounded-md bg-stone-100">{car.location}</span>
-                                    )}
-                                    {car.seats != null && (
-                                        <span className="px-2 py-1 rounded-md bg-stone-100">{car.seats} seats</span>
-                                    )}
-                                    {car.fuelType && (
-                                        <span className="px-2 py-1 rounded-md bg-stone-100 capitalize">{car.fuelType}</span>
-                                    )}
-                                </div>
-                                <div className="flex gap-2 mt-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => openEdit(car)}
-                                        className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-stone-200 text-sm hover:bg-stone-50 transition-colors"
-                                    >
-                                        <Pencil className="w-3.5 h-3.5" />
-                                        Edit
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleDelete(car)}
-                                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-red-200 text-red-600 text-sm hover:bg-red-50 transition-colors"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                    ))}
+                            </article>
+                        )
+                    })}
                 </div>
             )}
 
@@ -296,7 +344,7 @@ const AdminCars = () => {
                                         className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] bg-white capitalize"
                                     >
                                         {FUEL_TYPES.map((type) => (
-                                            <option key={type} value={type} className="capitalize">
+                                            <option key={type} value={type}>
                                                 {type.charAt(0).toUpperCase() + type.slice(1)}
                                             </option>
                                         ))}
@@ -317,20 +365,67 @@ const AdminCars = () => {
 
                             <div>
                                 <label className="block text-sm font-medium text-stone-700 mb-1">
-                                    Image {editing ? '(optional)' : ''}
+                                    Images ({existingImages.length + newFiles.length}/{MAX_IMAGES})
                                 </label>
                                 <input
                                     type="file"
-                                    accept="image/png,image/jpeg"
+                                    accept="image/png,image/jpeg,image/webp"
+                                    multiple
+                                    disabled={remainingSlots <= 0}
                                     onChange={handleImageChange}
-                                    className="w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-stone-100 file:text-stone-700 hover:file:bg-stone-200"
+                                    className="w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-stone-100 file:text-stone-700 hover:file:bg-stone-200 disabled:opacity-50"
                                 />
-                                {preview && (
-                                    <img
-                                        src={preview}
-                                        alt="Preview"
-                                        className="mt-3 h-32 w-full object-cover rounded-lg bg-stone-100"
-                                    />
+                                <p className="text-xs text-stone-400 mt-1">
+                                    Select multiple photos. First image is used as the cover.
+                                </p>
+
+                                {(existingImages.length > 0 || newFiles.length > 0) && (
+                                    <div className="mt-3 grid grid-cols-3 gap-2">
+                                        {existingImages.map((filename, index) => (
+                                            <div key={filename} className="relative group aspect-square">
+                                                <img
+                                                    src={imageUrl(filename)}
+                                                    alt=""
+                                                    className="w-full h-full object-cover rounded-lg bg-stone-100"
+                                                />
+                                                {index === 0 && newFiles.length === 0 && (
+                                                    <span className="absolute left-1 top-1 bg-[#e93c3d] text-white text-[10px] px-1.5 py-0.5 rounded">
+                                                        Cover
+                                                    </span>
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeExisting(filename)}
+                                                    className="absolute right-1 top-1 p-1 rounded-full bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    aria-label="Remove image"
+                                                >
+                                                    <X className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {newFiles.map((item, index) => (
+                                            <div key={item.preview} className="relative group aspect-square">
+                                                <img
+                                                    src={item.preview}
+                                                    alt=""
+                                                    className="w-full h-full object-cover rounded-lg bg-stone-100"
+                                                />
+                                                {existingImages.length === 0 && index === 0 && (
+                                                    <span className="absolute left-1 top-1 bg-[#e93c3d] text-white text-[10px] px-1.5 py-0.5 rounded">
+                                                        Cover
+                                                    </span>
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeNew(index)}
+                                                    className="absolute right-1 top-1 p-1 rounded-full bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    aria-label="Remove image"
+                                                >
+                                                    <X className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
 

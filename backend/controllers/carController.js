@@ -8,24 +8,62 @@ const parseSeats = (value) => {
     return Number.isInteger(seats) ? seats : NaN
 }
 
+const deleteImageFile = (filename) => {
+    if (!filename) return
+    const imagePath = path.join('images', filename)
+    if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath)
+    }
+}
+
+const normalizeImages = (car) => {
+    if (car.images?.length) return car.images
+    if (car.image) return [car.image]
+    return []
+}
+
+const uploadedFilenames = (req) => {
+    if (req.files?.length) return req.files.map((f) => f.filename)
+    if (req.file) return [req.file.filename]
+    return []
+}
+
+const parseRemovedImages = (value) => {
+    if (!value) return []
+    if (Array.isArray(value)) return value
+    try {
+        const parsed = JSON.parse(value)
+        return Array.isArray(parsed) ? parsed : []
+    } catch {
+        return String(value)
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean)
+    }
+}
+
 exports.createCar = async (req, res, next) => {
     try {
         const { name, brand, pricePerDay, description, location, fuelType } = req.body
         const seats = parseSeats(req.body.seats)
+        const filenames = uploadedFilenames(req)
 
-        if (!req.file) {
-            return res.status(400).json({ error: 'Car image is required' })
+        if (!filenames.length) {
+            return res.status(400).json({ error: 'At least one car image is required' })
         }
 
         if (!name || !brand || !pricePerDay || !description || !location || !fuelType) {
+            filenames.forEach(deleteImageFile)
             return res.status(400).json({ error: 'All fields are required' })
         }
 
         if (!Number.isInteger(seats) || seats < 1 || seats > 20) {
+            filenames.forEach(deleteImageFile)
             return res.status(400).json({ error: 'Seats must be a number between 1 and 20' })
         }
 
         if (!FUEL_TYPES.includes(String(fuelType).toLowerCase())) {
+            filenames.forEach(deleteImageFile)
             return res.status(400).json({
                 error: `Fuel type must be one of: ${FUEL_TYPES.join(', ')}`,
             })
@@ -39,11 +77,13 @@ exports.createCar = async (req, res, next) => {
             seats,
             location,
             fuelType: String(fuelType).toLowerCase(),
-            image: req.file.filename,
+            images: filenames,
+            image: filenames[0],
         })
         await newCar.save()
         res.status(201).json(newCar)
     } catch (error) {
+        uploadedFilenames(req).forEach(deleteImageFile)
         next(error)
     }
 }
@@ -79,11 +119,14 @@ exports.getCarById = async (req, res, next) => {
 }
 
 exports.updateCar = async (req, res, next) => {
+    const newFiles = uploadedFilenames(req)
+
     try {
         const { name, brand, pricePerDay, description, location, fuelType } = req.body
         const car = await Car.findById(req.params.id)
 
         if (!car) {
+            newFiles.forEach(deleteImageFile)
             return res.status(404).json({ error: 'Car not found' })
         }
 
@@ -96,6 +139,7 @@ exports.updateCar = async (req, res, next) => {
         if (req.body.seats !== undefined && req.body.seats !== '') {
             const seats = parseSeats(req.body.seats)
             if (!Number.isInteger(seats) || seats < 1 || seats > 20) {
+                newFiles.forEach(deleteImageFile)
                 return res.status(400).json({ error: 'Seats must be a number between 1 and 20' })
             }
             car.seats = seats
@@ -103,6 +147,7 @@ exports.updateCar = async (req, res, next) => {
 
         if (fuelType) {
             if (!FUEL_TYPES.includes(String(fuelType).toLowerCase())) {
+                newFiles.forEach(deleteImageFile)
                 return res.status(400).json({
                     error: `Fuel type must be one of: ${FUEL_TYPES.join(', ')}`,
                 })
@@ -110,17 +155,30 @@ exports.updateCar = async (req, res, next) => {
             car.fuelType = String(fuelType).toLowerCase()
         }
 
-        if (req.file) {
-            const oldImage = path.join('images', car.image)
-            if (fs.existsSync(oldImage)) {
-                fs.unlinkSync(oldImage)
-            }
-            car.image = req.file.filename
+        let images = normalizeImages(car)
+        const removed = parseRemovedImages(req.body.removedImages)
+
+        if (removed.length) {
+            images = images.filter((img) => !removed.includes(img))
+            removed.forEach(deleteImageFile)
         }
+
+        if (newFiles.length) {
+            images = [...images, ...newFiles]
+        }
+
+        if (!images.length) {
+            newFiles.forEach(deleteImageFile)
+            return res.status(400).json({ error: 'At least one car image is required' })
+        }
+
+        car.images = images
+        car.image = images[0]
 
         await car.save()
         res.json(car)
     } catch (error) {
+        newFiles.forEach(deleteImageFile)
         next(error)
     }
 }
@@ -133,10 +191,7 @@ exports.deleteCar = async (req, res, next) => {
             return res.status(404).json({ error: 'Car not found' })
         }
 
-        const imagePath = path.join('images', deletedCar.image)
-        if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath)
-        }
+        normalizeImages(deletedCar).forEach(deleteImageFile)
 
         res.json({ message: 'Car deleted successfully', deletedCar })
     } catch (error) {

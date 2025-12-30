@@ -4,6 +4,7 @@ import { Search } from 'lucide-react'
 import Card from '../components/Card'
 import SkeletonCard from '../components/SkeletonCard'
 import { useFetch } from '../hooks/useFetch'
+import { carCover } from '../utils/api'
 
 const FUEL_TYPES = ['all', 'petrol', 'diesel', 'electric', 'hybrid']
 
@@ -186,7 +187,7 @@ const Rent = () => {
               price={car.pricePerDay}
               seats={car.seats}
               fuelType={car.fuelType}
-              image={import.meta.env.VITE_API + 'images/' + car.image}
+              image={import.meta.env.VITE_API + 'images/' + carCover(car)}
             />
           </Link>
         ))}

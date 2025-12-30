@@ -32,6 +32,17 @@ export async function apiFetch(path, options = {}) {
 
 export function imageUrl(filename) {
     if (!filename) return ''
-    if (filename.startsWith('http')) return filename
+    if (filename.startsWith('http') || filename.startsWith('blob:')) return filename
     return API + 'images/' + filename
+}
+
+export function carImages(car) {
+    if (!car) return []
+    if (Array.isArray(car.images) && car.images.length) return car.images
+    if (car.image) return [car.image]
+    return []
+}
+
+export function carCover(car) {
+    return carImages(car)[0] || ''
 }

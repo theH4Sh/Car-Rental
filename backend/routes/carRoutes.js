@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.get('/car', getAllCars);
 router.get('/car/:id', getCarById);
-router.post('/car', requireAuth, requireAdmin, upload.single('carImage'), createCar);
-router.put('/car/:id', requireAuth, requireAdmin, upload.single('carImage'), updateCar);
+router.post('/car', requireAuth, requireAdmin, upload.array('carImages', 10), createCar);
+router.put('/car/:id', requireAuth, requireAdmin, upload.array('carImages', 10), updateCar);
 router.delete('/car/:id', requireAuth, requireAdmin, deleteCar);
 
 module.exports = router

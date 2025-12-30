@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { apiFetch, imageUrl } from '../../utils/api'
+import { apiFetch, carCover, imageUrl } from '../../utils/api'
 
 const statusColor = {
     pending: 'bg-amber-100 text-amber-800',
@@ -97,7 +97,7 @@ const AdminBookings = () => {
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-3 min-w-[160px]">
                                                 <img
-                                                    src={imageUrl(b.car?.image)}
+                                                    src={imageUrl(carCover(b.car))}
                                                     alt=""
                                                     className="w-11 h-11 rounded-lg object-cover bg-stone-100"
                                                 />

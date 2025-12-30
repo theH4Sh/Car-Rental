@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Car, CalendarDays, Users, MessageSquare, ArrowRight } from 'lucide-react'
-import { apiFetch, imageUrl } from '../../utils/api'
+import { apiFetch, carCover, imageUrl } from '../../utils/api'
 import toast from 'react-hot-toast'
 
 const statusColor = {
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
                                             <td className="py-3">
                                                 <div className="flex items-center gap-3">
                                                     <img
-                                                        src={imageUrl(b.car?.image)}
+                                                        src={imageUrl(carCover(b.car))}
                                                         alt=""
                                                         className="w-10 h-10 rounded-lg object-cover bg-stone-100"
                                                     />

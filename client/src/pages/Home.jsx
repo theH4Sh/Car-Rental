@@ -4,6 +4,7 @@ import SearchCard from "../components/SearchCard";
 import SkeletonCard from "../components/SkeletonCard";
 import { useFetch } from "../hooks/useFetch";
 import { Link } from 'react-router-dom'
+import { carCover } from "../utils/api";
 
 const Home = () => {
 
@@ -27,7 +28,7 @@ const Home = () => {
                             price={car.pricePerDay}
                             seats={car.seats}
                             fuelType={car.fuelType}
-                            image={import.meta.env.VITE_API + 'images/' + car.image}
+                            image={import.meta.env.VITE_API + 'images/' + carCover(car)}
                             />
                         </Link>
                         )))

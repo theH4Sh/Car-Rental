@@ -13,7 +13,7 @@ import {
   Fuel,
   MapPin,
 } from 'lucide-react'
-import { apiFetch } from '../utils/api'
+import { apiFetch, carImages } from '../utils/api'
 import CarGallery from '../components/CarGallery'
 
 const StarRating = ({ value, onChange, size = 'text-xl' }) => (
@@ -189,7 +189,7 @@ const CarPage = () => {
 
   return (
     <div className="min-h-screen max-w-5xl mx-auto md:px-4">
-      <CarGallery mainImage={car.image} images={[]} carName={car.name} />
+      <CarGallery images={carImages(car)} carName={car.name} />
 
       <div className="my-5">
         <h1 className="font-bold text-3xl uppercase">{car.name}</h1>

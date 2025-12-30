@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import { useFetch } from '../hooks/useFetch'
-import { apiFetch, imageUrl } from '../utils/api'
+import { apiFetch, carCover, imageUrl } from '../utils/api'
 
 const statusColor = {
   pending: 'bg-amber-100 text-amber-800',
@@ -113,7 +113,7 @@ const Profile = () => {
                 >
                   <div className="flex items-center gap-4 min-w-0">
                     <img
-                      src={imageUrl(b.car?.image)}
+                      src={imageUrl(carCover(b.car))}
                       alt={b.car?.name || 'Car'}
                       className="w-16 h-16 rounded-lg object-cover bg-gray-100 shrink-0"
                     />
