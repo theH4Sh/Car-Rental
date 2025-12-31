@@ -2,7 +2,7 @@ const User = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 
 const createToken = (_id) => {
-    return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d'})
+    return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '3d' })
 }
 
 const loginUser = async (req, res, next) => {
@@ -14,7 +14,6 @@ const loginUser = async (req, res, next) => {
         const role = user.role
         const username = user.username
 
-        //token
         const token = createToken(user._id)
 
         res.status(200).json({ username, token, role })
@@ -24,15 +23,32 @@ const loginUser = async (req, res, next) => {
 }
 
 const signUpUser = async (req, res, next) => {
-    const {username, email, password} = req.body
+    const { username, email, password } = req.body
 
     try {
         const user = await User.signup(username, email, password)
 
-        //token
         const token = createToken(user._id)
 
-        res.status(201).json({ username, email, token, message: `${username} registered successfully` })
+        res.status(201).json({
+            username,
+            email,
+            token,
+            role: user.role,
+            message: `${username} registered successfully`,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getMe = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password')
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' })
+        }
+        res.status(200).json(user)
     } catch (error) {
         next(error)
     }
@@ -42,14 +58,18 @@ const getUser = async (req, res, next) => {
     const { username } = req.params
 
     try {
-        const user = await User.findOne({ username }).select("-password")
-        if (user.length == 0) {
-            return res.status(404).json({error: 'user not found'})
+        const user = await User.findOne({
+            username: new RegExp(`^${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i'),
+        }).select('-password')
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' })
         }
+
         res.status(200).json(user)
     } catch (error) {
         next(error)
     }
 }
 
-module.exports = { loginUser, signUpUser, getUser }
+module.exports = { loginUser, signUpUser, getUser, getMe }

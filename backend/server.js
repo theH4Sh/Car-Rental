@@ -25,12 +25,12 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.log(err))
 
-//API Routes
-app.use('/api', carRoutes)
-app.use('/api', userRoutes)
+//API Routes — mount specific paths before any broad /api routers
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/booking', bookingRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api', carRoutes)
+app.use('/api', userRoutes)
 
 //Error Handling
 app.use((err, req, res, next) => {

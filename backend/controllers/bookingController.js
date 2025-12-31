@@ -46,7 +46,7 @@ const createBooking = async (req, res, next) => {
             car: carId,
             startDate: start,
             endDate: end,
-            status: 'pending'
+            status: 'confirmed',
         })
 
         await booking.save()
@@ -59,7 +59,7 @@ const createBooking = async (req, res, next) => {
 const getUserBooking = async (req, res, next) => {
     try {
         const bookings = await Booking.find({ user: req.user._id })
-            .populate('car', 'name brand pricePerDay image')
+            .populate('car', 'name brand pricePerDay image images location')
             .sort({ createdAt: -1 })
         res.json(bookings)
     } catch (error) {
