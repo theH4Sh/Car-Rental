@@ -13,6 +13,8 @@ import Signup from "./pages/Signup";
 import { useSelector } from "react-redux";
 import CarPage from "./pages/CarPage";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import RequireAuth from "./components/RequireAuth";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminCars from "./pages/admin/AdminCars";
 import AdminBookings from "./pages/admin/AdminBookings";
@@ -35,6 +37,14 @@ function App() {
           <Route path='signup' element={auth.isAuthenticated ? <Navigate to='/' /> : <Signup />} />
           <Route path='profile/:username' element={<Profile />} />
           <Route path='details/:id' element={<CarPage />} />
+          <Route
+            path='settings'
+            element={
+              <RequireAuth>
+                <Settings />
+              </RequireAuth>
+            }
+          />
         </Route>
 
         <Route
