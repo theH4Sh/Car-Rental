@@ -176,13 +176,18 @@ const Rent = () => {
         )}
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
         {isLoading && Array(6).fill(0).map((_, id) => <SkeletonCard key={id} />)}
 
         {!isLoading && !error && filtered.map((car) => (
-          <Link to={`/details/${car._id}`} key={car._id}>
+          <Link
+            to={`/details/${car._id}`}
+            key={car._id}
+            className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#e93c3d] focus-visible:ring-offset-2 rounded-2xl"
+          >
             <Card
               carName={car.name}
+              brand={car.brand}
               location={car.location || car.brand}
               price={car.pricePerDay}
               seats={car.seats}

@@ -1,13 +1,22 @@
 const SkeletonCard = () => {
-    return (
-      <div className="w-72 h-64 bg-white rounded-xl shadow p-4 animate-pulse">
-        <div className="bg-gray-300 h-32 w-full rounded-md mb-4"></div>
-        <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-        <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
-        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+  return (
+    <div className="flex h-full w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-sm">
+      <div className="aspect-[16/10] animate-pulse bg-stone-200" />
+      <div className="space-y-4 p-5">
+        <div className="flex gap-2">
+          <div className="h-7 w-20 animate-pulse rounded-lg bg-stone-200" />
+          <div className="h-7 w-20 animate-pulse rounded-lg bg-stone-200" />
+        </div>
+        <div className="flex items-center justify-between border-t border-stone-100 pt-4">
+          <div className="space-y-2">
+            <div className="h-3 w-10 animate-pulse rounded bg-stone-200" />
+            <div className="h-6 w-20 animate-pulse rounded bg-stone-200" />
+          </div>
+          <div className="h-10 w-20 animate-pulse rounded-xl bg-stone-200" />
+        </div>
       </div>
-    )
-  }
-  
-export default SkeletonCard;
-  
+    </div>
+  )
+}
+
+export default SkeletonCard
