@@ -86,6 +86,7 @@ const AdminBookings = () => {
                                 <tr>
                                     <th className="px-4 py-3 font-medium">Car</th>
                                     <th className="px-4 py-3 font-medium">Customer</th>
+                                    <th className="px-4 py-3 font-medium">Contact</th>
                                     <th className="px-4 py-3 font-medium">Dates</th>
                                     <th className="px-4 py-3 font-medium">Status</th>
                                     <th className="px-4 py-3 font-medium">Actions</th>
@@ -110,6 +111,12 @@ const AdminBookings = () => {
                                         <td className="px-4 py-3">
                                             <p className="font-medium text-[#2c090a]">{b.user?.username || '—'}</p>
                                             <p className="text-xs text-stone-400">{b.user?.email}</p>
+                                        </td>
+                                        <td className="px-4 py-3 min-w-[160px]">
+                                            <p className="font-medium text-[#2c090a]">{b.phone || '—'}</p>
+                                            <p className="text-xs text-stone-400 line-clamp-2 max-w-[200px]">
+                                                {b.address || '—'}
+                                            </p>
                                         </td>
                                         <td className="px-4 py-3 text-stone-600 whitespace-nowrap">
                                             {new Date(b.startDate).toLocaleDateString()} –{' '}

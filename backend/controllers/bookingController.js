@@ -1,12 +1,25 @@
 const Booking = require('../models/Booking')
 
 const createBooking = async (req, res, next) => {
-    const { carId, startDate, endDate } = req.body
+    const { carId, startDate, endDate, phone, address } = req.body
     const userId = req.user._id
 
     try {
-        if (!carId || !startDate || !endDate) {
-            return res.status(400).json({ error: 'Missing required fields: carId, startDate, or endDate' })
+        if (!carId || !startDate || !endDate || !phone || !address) {
+            return res.status(400).json({
+                error: 'Missing required fields: carId, startDate, endDate, phone, or address',
+            })
+        }
+
+        const trimmedPhone = String(phone).trim()
+        const trimmedAddress = String(address).trim()
+
+        if (trimmedPhone.length < 7) {
+            return res.status(400).json({ error: 'Please enter a valid phone number' })
+        }
+
+        if (trimmedAddress.length < 5) {
+            return res.status(400).json({ error: 'Please enter a complete address' })
         }
 
         const start = new Date(startDate)
@@ -26,10 +39,9 @@ const createBooking = async (req, res, next) => {
             return res.status(400).json({ error: 'Start date cannot be in the past' })
         }
 
-        // Inclusive ranges so same-day bookings (start === end) still conflict correctly
         const conflictBooking = await Booking.findOne({
             car: carId,
-            status: 'confirmed',
+            status: { $in: ['confirmed', 'pending'] },
             startDate: { $lte: end },
             endDate: { $gte: start },
         })
@@ -37,7 +49,7 @@ const createBooking = async (req, res, next) => {
         if (conflictBooking) {
             return res.status(409).json({
                 error: 'Car already booked between selected dates',
-                conflictBooking
+                conflictBooking,
             })
         }
 
@@ -46,7 +58,9 @@ const createBooking = async (req, res, next) => {
             car: carId,
             startDate: start,
             endDate: end,
-            status: 'confirmed',
+            phone: trimmedPhone,
+            address: trimmedAddress,
+            status: 'pending',
         })
 
         await booking.save()

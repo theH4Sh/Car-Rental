@@ -253,6 +253,11 @@ const Profile = () => {
                         {new Date(b.startDate).toLocaleDateString()} –{' '}
                         {new Date(b.endDate).toLocaleDateString()}
                       </p>
+                      {(b.phone || b.address) && (
+                        <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                          {[b.phone, b.address].filter(Boolean).join(' · ')}
+                        </p>
+                      )}
                       <span
                         className={`inline-block mt-1 px-2 py-0.5 rounded-md text-xs capitalize ${statusColor[b.status] || statusColor.pending}`}
                       >

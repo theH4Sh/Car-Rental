@@ -78,6 +78,8 @@ const CarPage = () => {
 
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [phone, setPhone] = useState('')
+  const [address, setAddress] = useState('')
   const [booking, setBooking] = useState(false)
 
   const [rating, setRating] = useState(0)
@@ -141,15 +143,33 @@ const CarPage = () => {
       return
     }
 
+    if (!phone.trim() || phone.trim().length < 7) {
+      toast.error('Enter a valid phone number')
+      return
+    }
+
+    if (!address.trim() || address.trim().length < 5) {
+      toast.error('Enter your pickup/delivery address')
+      return
+    }
+
     setBooking(true)
     try {
       await apiFetch('api/booking/', {
         method: 'POST',
-        body: JSON.stringify({ carId: id, startDate, endDate }),
+        body: JSON.stringify({
+          carId: id,
+          startDate,
+          endDate,
+          phone: phone.trim(),
+          address: address.trim(),
+        }),
       })
-      toast.success('Booking confirmed!')
+      toast.success('Booking submitted — pending approval')
       setStartDate('')
       setEndDate('')
+      setPhone('')
+      setAddress('')
     } catch (err) {
       toast.error(err.message)
     } finally {
@@ -434,6 +454,34 @@ const CarPage = () => {
                     onChange={(e) => setEndDate(e.target.value)}
                     required
                     className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-600 mb-1">
+                    Phone number
+                  </label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                    placeholder="+1 555 014 2200"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-600 mb-1">
+                    Address
+                  </label>
+                  <textarea
+                    id="address"
+                    rows="2"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    required
+                    placeholder="Pickup / delivery address"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow resize-none"
                   />
                 </div>
 
