@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import { apiFetch, carCover, imageUrl } from '../utils/api'
+import ConfirmModal from '../components/ConfirmModal'
 
 const statusColor = {
   pending: 'bg-amber-100 text-amber-800',
@@ -32,6 +33,7 @@ const Profile = () => {
   const [bookingsLoading, setBookingsLoading] = useState(false)
   const [bookingsError, setBookingsError] = useState(null)
   const [canceling, setCanceling] = useState(null)
+  const [cancelTarget, setCancelTarget] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -119,15 +121,16 @@ const Profile = () => {
     }
   }, [isOwnProfile])
 
-  const cancelBooking = async (id) => {
-    if (!confirm('Cancel this booking?')) return
-    setCanceling(id)
+  const cancelBooking = async () => {
+    if (!cancelTarget) return
+    setCanceling(cancelTarget._id)
     try {
-      await apiFetch(`api/booking/${id}`, { method: 'DELETE' })
+      await apiFetch(`api/booking/${cancelTarget._id}`, { method: 'DELETE' })
       setBookings((prev) =>
-        prev.map((b) => (b._id === id ? { ...b, status: 'canceled' } : b))
+        prev.map((b) => (b._id === cancelTarget._id ? { ...b, status: 'canceled' } : b))
       )
       toast.success('Booking canceled')
+      setCancelTarget(null)
     } catch (err) {
       toast.error(err.message)
     } finally {
@@ -270,7 +273,7 @@ const Profile = () => {
                     <button
                       type="button"
                       disabled={canceling === b._id}
-                      onClick={() => cancelBooking(b._id)}
+                      onClick={() => setCancelTarget(b)}
                       className="px-4 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-60 shrink-0"
                     >
                       {canceling === b._id ? 'Canceling…' : 'Cancel'}
@@ -282,6 +285,22 @@ const Profile = () => {
           )}
         </div>
       )}
+
+      <ConfirmModal
+        open={Boolean(cancelTarget)}
+        title="Cancel booking"
+        message={
+          cancelTarget
+            ? `Cancel your booking for ${cancelTarget.car?.name || 'this car'}? You can book again later if needed.`
+            : ''
+        }
+        confirmLabel="Cancel booking"
+        cancelLabel="Keep booking"
+        danger
+        loading={Boolean(canceling)}
+        onConfirm={cancelBooking}
+        onCancel={() => !canceling && setCancelTarget(null)}
+      />
     </div>
   )
 }

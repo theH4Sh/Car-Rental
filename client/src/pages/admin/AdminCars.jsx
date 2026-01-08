@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Plus, Pencil, Trash2, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { apiFetch, carCover, carImages, imageUrl } from '../../utils/api'
+import ConfirmModal from '../../components/ConfirmModal'
 
 const FUEL_TYPES = ['petrol', 'diesel', 'electric', 'hybrid']
 const MAX_IMAGES = 10
@@ -26,6 +27,8 @@ const AdminCars = () => {
     const [removedImages, setRemovedImages] = useState([])
     const [newFiles, setNewFiles] = useState([])
     const [saving, setSaving] = useState(false)
+    const [deleteTarget, setDeleteTarget] = useState(null)
+    const [deleting, setDeleting] = useState(false)
 
     const loadCars = () => {
         setLoading(true)
@@ -150,15 +153,19 @@ const AdminCars = () => {
         }
     }
 
-    const handleDelete = async (car) => {
-        if (!confirm(`Delete "${car.name}"? This cannot be undone.`)) return
+    const handleDelete = async () => {
+        if (!deleteTarget) return
 
+        setDeleting(true)
         try {
-            await apiFetch(`api/car/${car._id}`, { method: 'DELETE' })
+            await apiFetch(`api/car/${deleteTarget._id}`, { method: 'DELETE' })
             toast.success('Car deleted')
-            setCars((prev) => prev.filter((c) => c._id !== car._id))
+            setCars((prev) => prev.filter((c) => c._id !== deleteTarget._id))
+            setDeleteTarget(null)
         } catch (err) {
             toast.error(err.message)
+        } finally {
+            setDeleting(false)
         }
     }
 
@@ -245,7 +252,7 @@ const AdminCars = () => {
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => handleDelete(car)}
+                                            onClick={() => setDeleteTarget(car)}
                                             className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-red-200 text-red-600 text-sm hover:bg-red-50 transition-colors"
                                         >
                                             <Trash2 className="w-3.5 h-3.5" />
@@ -449,6 +456,22 @@ const AdminCars = () => {
                     </div>
                 </div>
             )}
+
+            <ConfirmModal
+                open={Boolean(deleteTarget)}
+                title="Delete car"
+                message={
+                    deleteTarget
+                        ? `Delete "${deleteTarget.name}"? This cannot be undone.`
+                        : ''
+                }
+                confirmLabel="Delete"
+                cancelLabel="Keep car"
+                danger
+                loading={deleting}
+                onConfirm={handleDelete}
+                onCancel={() => !deleting && setDeleteTarget(null)}
+            />
         </div>
     )
 }
