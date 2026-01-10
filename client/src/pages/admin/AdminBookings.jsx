@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { apiFetch, carCover, imageUrl } from '../../utils/api'
+import { apiFetch } from '../../utils/api'
+import BookingCarCell from '../../components/BookingCarCell'
 
 const statusColor = {
     pending: 'bg-amber-100 text-amber-800',
@@ -96,17 +97,7 @@ const AdminBookings = () => {
                                 {filtered.map((b) => (
                                     <tr key={b._id} className="hover:bg-stone-50/60">
                                         <td className="px-4 py-3">
-                                            <div className="flex items-center gap-3 min-w-[160px]">
-                                                <img
-                                                    src={imageUrl(carCover(b.car))}
-                                                    alt=""
-                                                    className="w-11 h-11 rounded-lg object-cover bg-stone-100"
-                                                />
-                                                <div>
-                                                    <p className="font-medium text-[#2c090a]">{b.car?.name || '—'}</p>
-                                                    <p className="text-xs text-stone-400">{b.car?.brand}</p>
-                                                </div>
-                                            </div>
+                                            <BookingCarCell car={b.car} />
                                         </td>
                                         <td className="px-4 py-3">
                                             <p className="font-medium text-[#2c090a]">{b.user?.username || '—'}</p>

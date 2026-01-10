@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Car, CalendarDays, Users, MessageSquare, ArrowRight } from 'lucide-react'
-import { apiFetch, carCover, imageUrl } from '../../utils/api'
+import { apiFetch } from '../../utils/api'
+import BookingCarCell from '../../components/BookingCarCell'
 import toast from 'react-hot-toast'
 
 const statusColor = {
@@ -109,16 +110,7 @@ const AdminDashboard = () => {
                                     {stats.recentBookings.map((b) => (
                                         <tr key={b._id}>
                                             <td className="py-3">
-                                                <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={imageUrl(carCover(b.car))}
-                                                        alt=""
-                                                        className="w-10 h-10 rounded-lg object-cover bg-stone-100"
-                                                    />
-                                                    <span className="font-medium text-[#2c090a]">
-                                                        {b.car?.name || '—'}
-                                                    </span>
-                                                </div>
+                                                <BookingCarCell car={b.car} size="sm" />
                                             </td>
                                             <td className="py-3 text-stone-600">{b.user?.username || '—'}</td>
                                             <td className="py-3 text-stone-600 whitespace-nowrap">

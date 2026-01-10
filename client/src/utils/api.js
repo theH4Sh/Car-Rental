@@ -46,3 +46,13 @@ export function carImages(car) {
 export function carCover(car) {
     return carImages(car)[0] || ''
 }
+
+/** True when a booking's car was removed from the fleet */
+export function isCarDeleted(car) {
+    return !car || !car._id
+}
+
+export function bookingCarName(car, fallback = 'Car deleted') {
+    if (isCarDeleted(car)) return fallback
+    return car.name || fallback
+}

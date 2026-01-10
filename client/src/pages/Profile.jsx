@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
-import { apiFetch, carCover, imageUrl } from '../utils/api'
+import { apiFetch, bookingCarName } from '../utils/api'
 import ConfirmModal from '../components/ConfirmModal'
+import BookingCarCell from '../components/BookingCarCell'
 
 const statusColor = {
   pending: 'bg-amber-100 text-amber-800',
@@ -233,25 +234,9 @@ const Profile = () => {
                   key={b._id}
                   className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between"
                 >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <img
-                      src={imageUrl(carCover(b.car))}
-                      alt={b.car?.name || 'Car'}
-                      className="w-16 h-16 rounded-lg object-cover bg-gray-100 shrink-0"
-                    />
+                  <div className="flex items-start sm:items-center gap-4 min-w-0 flex-1">
+                    <BookingCarCell car={b.car} size="lg" linkToDetails />
                     <div className="min-w-0">
-                      {b.car?._id ? (
-                        <Link
-                          to={`/details/${b.car._id}`}
-                          className="font-semibold text-[#2c090a] hover:text-[#e93c3d] truncate block"
-                        >
-                          {b.car?.name || 'Car'}
-                        </Link>
-                      ) : (
-                        <p className="font-semibold text-[#2c090a]">
-                          {b.car?.name || 'Car unavailable'}
-                        </p>
-                      )}
                       <p className="text-sm text-gray-500">
                         {new Date(b.startDate).toLocaleDateString()} –{' '}
                         {new Date(b.endDate).toLocaleDateString()}
@@ -291,7 +276,7 @@ const Profile = () => {
         title="Cancel booking"
         message={
           cancelTarget
-            ? `Cancel your booking for ${cancelTarget.car?.name || 'this car'}? You can book again later if needed.`
+            ? `Cancel your booking for ${bookingCarName(cancelTarget.car, 'this car')}? You can book again later if needed.`
             : ''
         }
         confirmLabel="Cancel booking"
