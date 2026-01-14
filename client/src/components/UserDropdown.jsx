@@ -1,18 +1,21 @@
 import { ChevronDown, LogOut, Settings, ShieldCheck, User } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../authSlice";
 import { useEffect, useRef, useState } from "react";
 
 const UserDropdown = ({ auth, mobile }) => {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef(null)
 
     const handleLogout = () => {
         dispatch(logout())
         localStorage.removeItem("auth")
+        setOpen(false)
+        navigate('/')
     }
 
     //close dropdown on outside click

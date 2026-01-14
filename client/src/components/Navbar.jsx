@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../authSlice";
-import { ChevronDown, LogOut, Menu, Settings, User, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import NavLink from "./NavLink";
 import UserDropdown from "./UserDropdown";
 
@@ -10,6 +10,7 @@ const Navbar = () => {
 
     const auth = useSelector(state => state.user)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -26,6 +27,8 @@ const Navbar = () => {
     const handleLogout = () => {
         dispatch(logout())
         localStorage.removeItem("auth")
+        setIsMenuOpen(false)
+        navigate('/')
     }
 
     return ( 
