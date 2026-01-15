@@ -288,8 +288,8 @@ const CarPage = () => {
           <h4>{car.location || car.brand}</h4>
         </div>
 
-        <div className="md:flex md:items-start md:gap-10">
-          <div className="flex-1 min-w-0">
+        <div className="md:flex md:items-start md:gap-10 relative isolate">
+          <div className="flex-1 min-w-0 relative z-0">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-6">
               <SpecTile
                 icon={<img className="w-8 h-8" src="/carseat.png" alt="" />}
@@ -414,128 +414,130 @@ const CarPage = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-80 lg:w-96 shrink-0 mt-8 md:mt-0">
-            <form
-              onSubmit={handleBook}
-              className="flex flex-col w-full border border-gray-400 rounded-xl sticky top-24 bg-white shadow-sm"
-            >
-              <div className="flex items-center justify-between border-b border-gray-400 px-6 sm:px-7 py-5">
-                <h4 className="text-gray-400 font-bold text-xl md:text-lg lg:text-xl">Price</h4>
-                <h2 className="text-3xl md:text-xl lg:text-3xl font-bold text-[#2c090a]">
-                  ${car.pricePerDay}
-                  <span className="text-sm text-gray-400 font-normal">/day</span>
-                </h2>
-              </div>
-
-              <div className="px-6 sm:px-7 py-5 space-y-4">
-                <div>
-                  <label htmlFor="startDate" className="block text-sm font-medium text-gray-600 mb-1">
-                    Start date
-                  </label>
-                  <input
-                    id="startDate"
-                    type="date"
-                    min={todayISO()}
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="endDate" className="block text-sm font-medium text-gray-600 mb-1">
-                    End date
-                  </label>
-                  <input
-                    id="endDate"
-                    type="date"
-                    min={startDate || todayISO()}
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    required
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-600 mb-1">
-                    Phone number
-                  </label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                    placeholder="+1 555 014 2200"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-600 mb-1">
-                    Address
-                  </label>
-                  <textarea
-                    id="address"
-                    rows="2"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    required
-                    placeholder="Pickup / delivery address"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow resize-none"
-                  />
+          <div className="w-full md:w-80 lg:w-96 shrink-0 mt-8 md:mt-0 relative z-10">
+            <div className="md:sticky md:top-24 md:space-y-5">
+              <form
+                onSubmit={handleBook}
+                className="flex flex-col w-full border border-gray-400 rounded-xl bg-white shadow-sm"
+              >
+                <div className="flex items-center justify-between border-b border-gray-400 px-6 sm:px-7 py-5">
+                  <h4 className="text-gray-400 font-bold text-xl md:text-lg lg:text-xl">Price</h4>
+                  <h2 className="text-3xl md:text-xl lg:text-3xl font-bold text-[#2c090a]">
+                    ${car.pricePerDay}
+                    <span className="text-sm text-gray-400 font-normal">/day</span>
+                  </h2>
                 </div>
 
-                {rentalDays > 0 && (
-                  <div className="flex justify-between text-sm font-semibold text-gray-700 pt-1 px-1 py-2 rounded-lg bg-stone-50">
-                    <span>
-                      {rentalDays} day{rentalDays !== 1 ? 's' : ''}
-                    </span>
-                    <span className="text-[#e93c3d]">Total ${totalPrice}</span>
+                <div className="px-6 sm:px-7 py-5 space-y-4">
+                  <div>
+                    <label htmlFor="startDate" className="block text-sm font-medium text-gray-600 mb-1">
+                      Start date
+                    </label>
+                    <input
+                      id="startDate"
+                      type="date"
+                      min={todayISO()}
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      required
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
+                    />
                   </div>
-                )}
-
-                {!auth.isAuthenticated ? (
-                  <Link
-                    to="/login"
-                    className="bg-[#e93c3d] hover:bg-[#d13435] active:scale-[0.99] p-3 w-full rounded-lg text-white font-bold text-center block transition-all"
-                  >
-                    Log in to book
-                  </Link>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={booking}
-                    className="bg-[#e93c3d] hover:bg-[#d13435] active:scale-[0.99] p-3 w-full rounded-lg text-white font-bold disabled:opacity-60 transition-all cursor-pointer"
-                  >
-                    {booking ? 'Booking…' : 'Book Now'}
-                  </button>
-                )}
-              </div>
-            </form>
-
-            <div className="my-5">
-              <h3 className="font-bold text-xl my-3 text-[#2c090a]">Listed by</h3>
-              <div className="rounded-xl border border-gray-300 bg-white p-4">
-                <div className="flex items-center gap-3">
-                  <div className="relative shrink-0">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e93c3d] text-lg font-bold text-white shadow-sm">
-                      T
-                    </span>
-                    <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-sm">
-                      <BadgeCheck className="h-4 w-4 fill-emerald-500 text-white" />
-                    </span>
+                  <div>
+                    <label htmlFor="endDate" className="block text-sm font-medium text-gray-600 mb-1">
+                      End date
+                    </label>
+                    <input
+                      id="endDate"
+                      type="date"
+                      min={startDate || todayISO()}
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      required
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
+                    />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="font-bold text-[#2c090a]">TOPCAR</h4>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-                        <BadgeCheck className="h-3.5 w-3.5" />
-                        Verified
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-600 mb-1">
+                      Phone number
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                      placeholder="+1 555 014 2200"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address" className="block text-sm font-medium text-gray-600 mb-1">
+                      Address
+                    </label>
+                    <textarea
+                      id="address"
+                      rows="2"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      required
+                      placeholder="Pickup / delivery address"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e93c3d] transition-shadow resize-none"
+                    />
+                  </div>
+
+                  {rentalDays > 0 && (
+                    <div className="flex justify-between text-sm font-semibold text-gray-700 pt-1 px-1 py-2 rounded-lg bg-stone-50">
+                      <span>
+                        {rentalDays} day{rentalDays !== 1 ? 's' : ''}
+                      </span>
+                      <span className="text-[#e93c3d]">Total ${totalPrice}</span>
+                    </div>
+                  )}
+
+                  {!auth.isAuthenticated ? (
+                    <Link
+                      to="/login"
+                      className="bg-[#e93c3d] hover:bg-[#d13435] active:scale-[0.99] p-3 w-full rounded-lg text-white font-bold text-center block transition-all"
+                    >
+                      Log in to book
+                    </Link>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={booking}
+                      className="bg-[#e93c3d] hover:bg-[#d13435] active:scale-[0.99] p-3 w-full rounded-lg text-white font-bold disabled:opacity-60 transition-all cursor-pointer"
+                    >
+                      {booking ? 'Booking…' : 'Book Now'}
+                    </button>
+                  )}
+                </div>
+              </form>
+
+              <div className="mt-5 md:mt-0">
+                <h3 className="font-bold text-xl my-3 text-[#2c090a]">Listed by</h3>
+                <div className="rounded-xl border border-gray-300 bg-white p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="relative shrink-0">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e93c3d] text-lg font-bold text-white shadow-sm">
+                        T
+                      </span>
+                      <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-sm">
+                        <BadgeCheck className="h-4 w-4 fill-emerald-500 text-white" />
                       </span>
                     </div>
-                    <p className="mt-0.5 text-sm text-gray-500">
-                      Official TOPCAR listing · Trusted fleet
-                    </p>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h4 className="font-bold text-[#2c090a]">TOPCAR</h4>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+                          <BadgeCheck className="h-3.5 w-3.5" />
+                          Verified
+                        </span>
+                      </div>
+                      <p className="mt-0.5 text-sm text-gray-500">
+                        Official TOPCAR listing · Trusted fleet
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
