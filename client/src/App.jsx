@@ -35,7 +35,7 @@ function App() {
           <Route path='contact' element={<Contact />} />
           <Route path='login' element={auth.isAuthenticated ? <Navigate to='/' /> : <Login />} />
           <Route path='signup' element={auth.isAuthenticated ? <Navigate to='/' /> : <Signup />} />
-          <Route path='profile/:username' element={<Profile />} />
+          <Route path='profile/:username' element={!auth.isAuthenticated ? <Navigate to='/' /> : <Profile />} />
           <Route path='details/:id' element={<CarPage />} />
           <Route
             path='settings'
