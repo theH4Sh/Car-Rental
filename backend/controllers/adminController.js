@@ -2,18 +2,21 @@ const User = require('../models/userModel')
 const Car = require('../models/Car')
 const Booking = require('../models/Booking')
 const Review = require('../models/Review')
+const ContactMessage = require('../models/ContactMessage')
 
 const getStats = async (req, res, next) => {
     try {
-        const [users, cars, bookings, reviews, pending, confirmed, canceled] = await Promise.all([
-            User.countDocuments(),
-            Car.countDocuments(),
-            Booking.countDocuments(),
-            Review.countDocuments(),
-            Booking.countDocuments({ status: 'pending' }),
-            Booking.countDocuments({ status: 'confirmed' }),
-            Booking.countDocuments({ status: 'canceled' }),
-        ])
+        const [users, cars, bookings, reviews, pending, confirmed, canceled, unreadMessages] =
+            await Promise.all([
+                User.countDocuments(),
+                Car.countDocuments(),
+                Booking.countDocuments(),
+                Review.countDocuments(),
+                Booking.countDocuments({ status: 'pending' }),
+                Booking.countDocuments({ status: 'confirmed' }),
+                Booking.countDocuments({ status: 'canceled' }),
+                ContactMessage.countDocuments({ status: 'new' }),
+            ])
 
         const recentBookings = await Booking.find()
             .populate('user', 'username email')
@@ -26,6 +29,7 @@ const getStats = async (req, res, next) => {
             cars,
             bookings,
             reviews,
+            unreadMessages,
             bookingStatus: { pending, confirmed, canceled },
             recentBookings,
         })
