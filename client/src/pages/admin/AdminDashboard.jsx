@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Car, CalendarDays, Users, MessageSquare, ArrowRight } from 'lucide-react'
+import { Car, CalendarDays, Users, ArrowRight, Mail } from 'lucide-react'
 import { apiFetch } from '../../utils/api'
 import BookingCarCell from '../../components/BookingCarCell'
 import toast from 'react-hot-toast'
@@ -38,7 +38,13 @@ const AdminDashboard = () => {
         { label: 'Cars', value: stats.cars, icon: Car, to: '/admin/cars', accent: 'bg-[#e93c3d]/10 text-[#e93c3d]' },
         { label: 'Bookings', value: stats.bookings, icon: CalendarDays, to: '/admin/bookings', accent: 'bg-[#513336]/10 text-[#513336]' },
         { label: 'Users', value: stats.users, icon: Users, to: '/admin/users', accent: 'bg-sky-100 text-sky-700' },
-        { label: 'Reviews', value: stats.reviews, icon: MessageSquare, to: '/admin/cars', accent: 'bg-amber-100 text-amber-700' },
+        {
+            label: 'New messages',
+            value: stats.unreadMessages ?? 0,
+            icon: Mail,
+            to: '/admin/messages',
+            accent: 'bg-emerald-100 text-emerald-700',
+        },
     ]
 
     return (

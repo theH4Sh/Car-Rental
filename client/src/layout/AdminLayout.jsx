@@ -4,6 +4,7 @@ import {
     Car,
     CalendarDays,
     Users,
+    Mail,
     ArrowLeft,
     Menu,
     X,
@@ -15,6 +16,7 @@ const links = [
     { to: '/admin', end: true, label: 'Dashboard', icon: LayoutDashboard },
     { to: '/admin/cars', label: 'Cars', icon: Car },
     { to: '/admin/bookings', label: 'Bookings', icon: CalendarDays },
+    { to: '/admin/messages', label: 'Messages', icon: Mail },
     { to: '/admin/users', label: 'Users', icon: Users },
 ]
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Mail, MapPin, Phone, Clock } from 'lucide-react'
+import { apiFetch } from '../utils/api'
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -15,16 +16,27 @@ const Contact = () => {
     setForm({ ...form, [e.target.id]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setSending(true)
 
-    // No contact API yet — simulate a successful send
-    setTimeout(() => {
+    try {
+      await apiFetch('api/contact/', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          subject: form.subject.trim(),
+          message: form.message.trim(),
+        }),
+      })
       toast.success('Message sent! We’ll get back to you soon.')
       setForm({ name: '', email: '', subject: '', message: '' })
+    } catch (err) {
+      toast.error(err.message)
+    } finally {
       setSending(false)
-    }, 600)
+    }
   }
 
   return (

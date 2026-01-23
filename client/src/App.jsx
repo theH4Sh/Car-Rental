@@ -19,6 +19,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminCars from "./pages/admin/AdminCars";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminMessages from "./pages/admin/AdminMessages";
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
           <Route index element={<AdminDashboard />} />
           <Route path='cars' element={<AdminCars />} />
           <Route path='bookings' element={<AdminBookings />} />
+          <Route path='messages' element={<AdminMessages />} />
           <Route path='users' element={<AdminUsers />} />
         </Route>
       </>
